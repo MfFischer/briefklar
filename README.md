@@ -22,8 +22,7 @@
 
 <br />
 
-<!-- Screenshot placeholder — replace with actual app screenshot -->
-<img src="https://placehold.co/900x560/f8fafc/64748b?text=BriefKlar+App+Screenshot" alt="BriefKlar App" width="860" style="border-radius: 12px;" />
+<img src="./docs/screenshot.jpg" alt="BriefKlar — Welcome screen" width="860" />
 
 <br /><br />
 
