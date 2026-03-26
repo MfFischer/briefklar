@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+out/
+
+# Electron builder cache
+.electron-builder-cache/
+
+# Tessdata binary (too large for git — users copy from system)
+deu.traineddata
+resources/tessdata/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Env
+.env
+.env.local
+
+# Editor
+.vscode/
+*.suo
+*.user
