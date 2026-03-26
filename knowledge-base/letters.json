@@ -1,0 +1,850 @@
+[
+  {
+    "id": "einkommensteuerbescheid",
+    "label": "Income Tax Assessment",
+    "labelDe": "Einkommensteuerbescheid",
+    "urgency": "high",
+    "senderPatterns": ["Finanzamt", "Finanzamts", "Finanzbehörde", "Steuerbehörde"],
+    "subjectPatterns": ["Einkommensteuerbescheid", "Einkommensteuer", "Steuerbescheid"],
+    "bodyPatterns": ["§ 25 EStG", "Einkommensteuer", "Steuerbescheid", "Veranlagung"],
+    "whatItIs": "Your annual income tax assessment. The Finanzamt calculated your taxes for the year and is telling you the result — either you owe money or you get a refund.",
+    "whatToDo": [
+      "Check whether you owe money (Nachzahlung) or receive a refund (Erstattung)",
+      "If you owe money: pay by the stated deadline",
+      "If anything looks wrong: you have exactly 1 month from the letter date + 3 days to file a formal objection (Einspruch) — not from when you received it",
+      "Send any Einspruch by registered mail (Einschreiben mit Rückschein) so you have proof"
+    ],
+    "consequence": "Unpaid tax gets a 1% monthly surcharge (Säumniszuschlag). A missed Einspruch deadline means you permanently lose the right to object — even if the amount is wrong.",
+    "deadlineRule": "explicit_or_1_month",
+    "replyTemplateId": "einspruch_steuerbescheid",
+    "freeHelp": [
+      "Lohnsteuerhilfe e.V. — low-cost tax help for employees (lohnsteuerhilfe.de)",
+      "Verbraucherzentrale — free initial advice in most cities",
+      "Beratungshilfe — if you have low income, a court can issue a Beratungshilfeschein for free lawyer advice"
+    ]
+  },
+  {
+    "id": "umsatzsteuerbescheid",
+    "label": "VAT Assessment",
+    "labelDe": "Umsatzsteuerbescheid",
+    "urgency": "high",
+    "senderPatterns": ["Finanzamt", "Finanzbehörde"],
+    "subjectPatterns": ["Umsatzsteuerbescheid", "Umsatzsteuer", "USt-Bescheid"],
+    "bodyPatterns": ["Umsatzsteuer", "§ 21 UStG", "Vorsteuer", "Umsatzsteuerjahreserklärung"],
+    "whatItIs": "A VAT (Umsatzsteuer) assessment from the Finanzamt. This may follow your annual VAT return and shows whether you owe additional VAT or are due a refund.",
+    "whatToDo": [
+      "Check the amount and whether it matches what you reported",
+      "If you owe money: pay by the stated deadline",
+      "If the amount is wrong: file an Einspruch within 1 month of the letter date (3-Tages-Fiktion applies)",
+      "Send Einspruch by registered mail (Einschreiben)"
+    ],
+    "consequence": "Unpaid VAT triggers a 1% monthly surcharge. Missing the Einspruch window makes the assessment legally final.",
+    "deadlineRule": "explicit_or_1_month",
+    "replyTemplateId": "einspruch_steuerbescheid",
+    "freeHelp": [
+      "Steuerberater (tax advisor) — mandatory for complex VAT issues",
+      "Bundessteuerberaterkammer — find a Steuerberater at bstbk.de",
+      "Beratungshilfe — if low income, courts issue free lawyer advice vouchers"
+    ]
+  },
+  {
+    "id": "grundsteuerbescheid",
+    "label": "Property Tax Assessment",
+    "labelDe": "Grundsteuerbescheid",
+    "urgency": "medium",
+    "senderPatterns": ["Gemeinde", "Stadt", "Stadtkasse", "Stadtverwaltung", "Finanzamt"],
+    "subjectPatterns": ["Grundsteuerbescheid", "Grundsteuer", "Grundsteuer A", "Grundsteuer B"],
+    "bodyPatterns": ["Grundsteuer", "Einheitswert", "Steuermessbetrag", "Hebesatz", "Grundstücks"],
+    "whatItIs": "A property tax (Grundsteuer) assessment from your local municipality. Since the 2022 Grundsteuer reform, many property owners received new assessments based on recalculated property values. Tenants indirectly pay this through Nebenkosten.",
+    "whatToDo": [
+      "Check that the property address and calculated amount are correct",
+      "Pay by the quarterly due dates stated (usually Feb 15, May 15, Aug 15, Nov 15)",
+      "If the assessment is wrong: file an Einspruch within 1 month to the issuing authority",
+      "If you received a new Grundsteuer reform letter from the Finanzamt: this is the basis — you may contest that separately"
+    ],
+    "consequence": "Unpaid Grundsteuer results in enforcement. For the reform recalculation: if you miss the Einspruch on the base assessment (Grundsteuermessbescheid), you lose the right to contest the calculation permanently.",
+    "deadlineRule": "explicit_or_1_month",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Haus & Grund — property owner association, free advice for members (hausundgrund.de)",
+      "Verbraucherzentrale — Grundsteuer reform guidance available in all states",
+      "Your local Finanzamt — free calculation check appointment"
+    ]
+  },
+  {
+    "id": "gewerbesteuerbescheid",
+    "label": "Trade Tax Assessment",
+    "labelDe": "Gewerbesteuerbescheid",
+    "urgency": "high",
+    "senderPatterns": ["Gemeinde", "Stadt", "Stadtkasse", "Stadtverwaltung", "Finanzamt"],
+    "subjectPatterns": ["Gewerbesteuerbescheid", "Gewerbesteuer", "Gewerbesteuer-Messbescheid"],
+    "bodyPatterns": ["Gewerbesteuer", "Gewerbeertrag", "§ 11 GewStG", "Hebesatz", "Gewerbebetrieb", "Vorauszahlung"],
+    "whatItIs": "A trade tax (Gewerbesteuer) assessment for your business. The Gemeinde calculates this based on your business profit. It comes in quarterly advance payments (Vorauszahlungen) and a final annual assessment.",
+    "whatToDo": [
+      "Check that your business profit (Gewerbeertrag) is correct",
+      "Pay advance payments on time (quarterly: Feb 15, May 15, Aug 15, Nov 15)",
+      "If the amount is wrong: file an Einspruch within 1 month",
+      "Coordinate with your Steuerberater — Gewerbesteuer is deductible from income tax"
+    ],
+    "consequence": "Late payments trigger 1% monthly surcharge. Gewerbesteuer can be substantial — 15% of profit is common depending on the municipality's Hebesatz.",
+    "deadlineRule": "explicit_or_1_month",
+    "replyTemplateId": "einspruch_steuerbescheid",
+    "freeHelp": [
+      "IHK (Industrie- und Handelskammer) — free business tax advice for members",
+      "Steuerberater — essential for Gewerbesteuer issues",
+      "Bundessteuerberaterkammer — find a Steuerberater at bstbk.de"
+    ]
+  },
+  {
+    "id": "kfz_steuer",
+    "label": "Vehicle Tax Notice",
+    "labelDe": "Kraftfahrzeugsteuerbescheid",
+    "urgency": "low",
+    "senderPatterns": ["Hauptzollamt", "Zollamt", "Kraftfahrtbundesamt"],
+    "subjectPatterns": ["Kraftfahrzeugsteuer", "Kfz-Steuer", "Kraftfahrzeugsteuerbescheid"],
+    "bodyPatterns": ["Kraftfahrzeugsteuer", "Fahrzeug", "Zulassungsbehörde", "Hubraum", "CO2", "Erstzulassung"],
+    "whatItIs": "Annual vehicle tax (Kraftfahrzeugsteuer) notice from the Hauptzollamt. Every registered vehicle owner pays this. It's automatically debited if you have a SEPA mandate — this letter just confirms the amount.",
+    "whatToDo": [
+      "Check that the vehicle (Kennzeichen) and amount are correct",
+      "If you have SEPA direct debit set up: nothing to do — it will be automatically collected",
+      "If no SEPA: pay by the due date stated",
+      "If you sold the vehicle or it was deregistered: check that the amount has been adjusted — you only pay for the days the vehicle was registered to you"
+    ],
+    "consequence": "Unpaid vehicle tax can lead to forced deregistration of your vehicle by the Zulassungsbehörde.",
+    "deadlineRule": "explicit",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Hauptzollamt — direct contact for corrections (zoll.de)",
+      "ADAC — vehicle tax queries for members",
+      "Zulassungsbehörde — for deregistration or ownership change confirmation"
+    ]
+  },
+  {
+    "id": "mahnung",
+    "label": "Payment Reminder",
+    "labelDe": "Mahnung / Zahlungserinnerung",
+    "urgency": "critical",
+    "senderPatterns": ["Inkasso", "Mahnung", "Gläubiger", "Forderungsmanagement"],
+    "subjectPatterns": ["Mahnung", "Zahlungserinnerung", "Zahlungsaufforderung", "letzte Mahnung", "letzte Warnung"],
+    "bodyPatterns": ["Mahnung", "offene Forderung", "Verzug", "sofortige Zahlung", "gerichtliches Mahnverfahren", "Inkasso"],
+    "whatItIs": "A payment reminder (Mahnung) telling you that a payment is overdue. This could be a first reminder or a final warning before legal action.",
+    "whatToDo": [
+      "Check whether the debt is legitimate — do you recognise the original invoice?",
+      "If legitimate: pay immediately to stop further fees and interest",
+      "If you already paid: gather your payment proof (bank statement) and respond immediately in writing",
+      "If the amount is wrong or you dispute the debt: respond in writing within the stated deadline",
+      "Send all replies by registered mail (Einschreiben mit Rückschein)"
+    ],
+    "consequence": "Ignoring a Mahnung leads to a court payment order (Mahnbescheid). If you don't respond to that, it becomes a Vollstreckungsbescheid — debt enforcement, which can include wage garnishment.",
+    "deadlineRule": "explicit_or_14_days",
+    "replyTemplateId": "widerspruch_mahnung",
+    "freeHelp": [
+      "Schuldnerberatung — free debt counselling, find your local office at schuldnerberatung.de",
+      "Verbraucherzentrale — free advice on disputing illegitimate Mahnungen",
+      "Caritas / AWO — free social counselling including debt advice"
+    ]
+  },
+  {
+    "id": "inkasso",
+    "label": "Debt Collection Letter",
+    "labelDe": "Inkassoschreiben",
+    "urgency": "high",
+    "senderPatterns": ["Inkasso", "Collection", "Forderungsmanagement", "Creditreform", "EOS", "PAIR Finance", "Intrum", "Lowell", "UNIVERSUM"],
+    "subjectPatterns": ["Inkasso", "Forderungsabtretung", "abgetreten", "Forderungseinzug", "Mahnung"],
+    "bodyPatterns": ["Inkasso", "abgetreten", "Zession", "Forderungsabtretung", "Gläubiger", "ursprüngliche Forderung", "Inkassokosten", "RVG"],
+    "whatItIs": "A letter from a third-party debt collection agency (Inkassounternehmen). A creditor has sold or assigned your debt to this agency. Important: Inkasso letters often exaggerate the amount owed by adding inflated 'Inkassokosten' — these may not all be legally valid.",
+    "whatToDo": [
+      "Do NOT panic — many Inkasso letters are inflated or legally questionable",
+      "Request a full Forderungsaufstellung (itemised debt breakdown) in writing — you are legally entitled to this",
+      "Check: does the original debt exist? Is it yours? Is it older than 3 years? (may be statute-barred — verjährt)",
+      "Only pay the principal debt (Hauptforderung) — Inkassokosten are often legally capped or unenforceable",
+      "Never ignore it completely — but do not pay without verifying first"
+    ],
+    "consequence": "If the debt is legitimate and ignored, the agency can apply for a Mahnbescheid (court order). However, many Inkasso demands are statute-barred or inflated — paying without checking can mean paying money you do not owe.",
+    "deadlineRule": "explicit_or_14_days",
+    "replyTemplateId": "widerspruch_mahnung",
+    "freeHelp": [
+      "Schuldnerberatung — free debt counselling (schuldnerberatung.de)",
+      "Verbraucherzentrale — specific Inkasso advice and sample letter templates (verbraucherzentrale.de)",
+      "Bundeszentrale für Verbraucherschutz — register of licensed Inkasso firms (rechtsdienstleistungsregister.de)"
+    ]
+  },
+  {
+    "id": "mahnbescheid",
+    "label": "Court Payment Order",
+    "labelDe": "Mahnbescheid",
+    "urgency": "critical",
+    "senderPatterns": ["Amtsgericht", "Mahngericht", "Gerichtliches Mahnverfahren"],
+    "subjectPatterns": ["Mahnbescheid", "gerichtlicher Mahnbescheid", "Antragsteller"],
+    "bodyPatterns": ["Mahnbescheid", "Amtsgericht", "Antragsgegner", "Widerspruch", "§ 692 ZPO"],
+    "whatItIs": "A court payment order (Mahnbescheid). A creditor has gone to court to collect a debt from you. This is an official legal document — not just a reminder.",
+    "whatToDo": [
+      "Act immediately — you have exactly 14 days from delivery to respond",
+      "If you dispute the debt: file a Widerspruch within 14 days using the form included with this letter",
+      "If you owe the money: try to pay and contact the creditor to avoid further court costs",
+      "Send Widerspruch by registered mail (Einschreiben mit Rückschein) to the Amtsgericht shown on the letter",
+      "Do NOT ignore this — even if the debt is wrong"
+    ],
+    "consequence": "If you do nothing within 14 days, the court issues a Vollstreckungsbescheid (enforcement order). At that point, the creditor can have wages or bank accounts seized without further notice.",
+    "deadlineRule": "14_days_from_delivery",
+    "replyTemplateId": "widerspruch_mahnbescheid",
+    "freeHelp": [
+      "Verbraucherzentrale — free Widerspruch guidance and templates",
+      "Rechtsanwalt with Beratungshilfe — if low income, get a Beratungshilfeschein from your local Amtsgericht for free legal advice",
+      "Schuldnerberatung — free counselling if you cannot pay (schuldnerberatung.de)"
+    ]
+  },
+  {
+    "id": "pfaendung",
+    "label": "Garnishment / Account Seizure",
+    "labelDe": "Pfändungs- und Überweisungsbeschluss",
+    "urgency": "critical",
+    "senderPatterns": ["Amtsgericht", "Gerichtsvollzieher", "Vollstreckungsgericht"],
+    "subjectPatterns": ["Pfändungs- und Überweisungsbeschluss", "Kontopfändung", "Lohnpfändung", "Pfändung", "Vollstreckung"],
+    "bodyPatterns": ["Pfändung", "Pfändungs- und Überweisungsbeschluss", "Drittschuldner", "Vollstreckungsgläubiger", "Konto", "§ 829 ZPO", "§ 850 ZPO"],
+    "whatItIs": "A garnishment order (Pfändungs- und Überweisungsbeschluss) — either freezing your bank account or directing your employer to withhold wages. This is serious court-ordered enforcement. Your bank is now legally required to freeze funds above the basic protected amount.",
+    "whatToDo": [
+      "Act TODAY — contact your bank immediately to convert to a Pfändungsschutzkonto (P-Konto) if not already done",
+      "A P-Konto protects a basic monthly amount (currently €1,402.28) from seizure — you need this for daily living",
+      "Contact a Schuldnerberatung immediately — they can help stop or limit the enforcement",
+      "If the underlying debt is wrong: consult a lawyer about contesting the Vollstreckungstitel",
+      "Do NOT withdraw all your money — this does not help and can cause legal problems"
+    ],
+    "consequence": "Without P-Konto protection, ALL money in your account above zero can be seized. Wage garnishment takes a percentage of your net pay. This will continue until the debt is fully paid unless legally challenged.",
+    "deadlineRule": "explicit_immediate",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Schuldnerberatung — URGENT free debt counselling (schuldnerberatung.de)",
+      "Your bank — ask immediately about P-Konto (Pfändungsschutzkonto) conversion",
+      "Verbraucherzentrale — P-Konto guidance",
+      "Beratungshilfe / Prozesskostenhilfe — free legal help if low income"
+    ]
+  },
+  {
+    "id": "bussgeld",
+    "label": "Fine / Penalty Notice",
+    "labelDe": "Bußgeldbescheid",
+    "urgency": "high",
+    "senderPatterns": ["Bußgeldstelle", "Ordnungsamt", "Kraftfahrtbundesamt", "KBA", "Polizei", "Landratsamt"],
+    "subjectPatterns": ["Bußgeldbescheid", "Bußgeld", "Ordnungswidrigkeit", "Verwarnung"],
+    "bodyPatterns": ["Bußgeldbescheid", "Ordnungswidrigkeit", "OWiG", "Einspruch", "Kraftfahrtbundesamt", "Punkte"],
+    "whatItIs": "A fine notice (Bußgeldbescheid) for an infraction — most commonly a traffic violation, but also noise, parking, or other regulatory offences.",
+    "whatToDo": [
+      "Check whether you or your vehicle was actually involved",
+      "If you accept the fine: pay by the stated deadline — usually 2–4 weeks",
+      "If you want to contest it: file an Einspruch in writing within 2 weeks of receiving the notice",
+      "Note: an Einspruch can result in a higher fine if you lose at court",
+      "Send Einspruch by registered mail (Einschreiben)"
+    ],
+    "consequence": "Unpaid fines lead to additional fees and eventually enforcement. Traffic fines can also trigger points on your licence (Punkte in Flensburg). Ignoring a Bußgeldbescheid waives your right to contest it.",
+    "deadlineRule": "14_days_einspruch",
+    "replyTemplateId": "einspruch_bussgeld",
+    "freeHelp": [
+      "ADAC — traffic fine advice for members (adac.de)",
+      "Verbraucherzentrale — general fine dispute guidance",
+      "Anwalt für Verkehrsrecht — traffic law specialist for complex cases"
+    ]
+  },
+  {
+    "id": "krankenkasse_anforderung",
+    "label": "Health Insurance Request",
+    "labelDe": "Krankenkasse – Anforderung / Bescheid",
+    "urgency": "medium",
+    "senderPatterns": ["Krankenkasse", "AOK", "TK", "Techniker Krankenkasse", "DAK", "Barmer", "BKK", "IKK", "Knappschaft", "SBK"],
+    "subjectPatterns": ["Krankenversicherung", "Beitragsnachweis", "Nachversicherung", "Versicherungspflicht", "Bescheid"],
+    "bodyPatterns": ["Krankenkasse", "Beiträge", "Versicherungspflicht", "Mitgliedschaft", "SGB V"],
+    "whatItIs": "A letter from your health insurance (Krankenkasse). This could be a document request, a change in your contribution rate, or a notice about your coverage status.",
+    "whatToDo": [
+      "Read carefully — identify whether this requires a document, a payment, or just your acknowledgement",
+      "If documents are requested: gather and submit them by the stated deadline",
+      "If your contribution has changed: check if the calculation is correct",
+      "If you disagree with a decision: you have 1 month to file a Widerspruch"
+    ],
+    "consequence": "Ignoring document requests can lead to suspended coverage. Unpaid contributions can result in debt collection. Missing the Widerspruch deadline makes the decision final.",
+    "deadlineRule": "explicit_or_1_month",
+    "replyTemplateId": "widerspruch_krankenkasse",
+    "freeHelp": [
+      "Unabhängige Patientenberatung (UPD) — free independent health insurance advice (patientenberatung.de)",
+      "VdK — social law association, free advice for members (vdk.de)",
+      "SoVD — Sozialverband, free advice on health insurance disputes (sovd.de)"
+    ]
+  },
+  {
+    "id": "rentenversicherung",
+    "label": "Pension Insurance Notice",
+    "labelDe": "Deutsche Rentenversicherung – Bescheid",
+    "urgency": "medium",
+    "senderPatterns": ["Deutsche Rentenversicherung", "Rentenversicherung", "DRV"],
+    "subjectPatterns": ["Rentenbescheid", "Rentenauskunft", "Rentenversicherung", "Beitragsnachweis"],
+    "bodyPatterns": ["Rentenversicherung", "Rentenpunkte", "Altersrente", "§ 96 SGB VI", "Beitragskonto"],
+    "whatItIs": "A letter from the German pension insurance authority (Deutsche Rentenversicherung). This may be an annual pension statement, a decision about your pension entitlement, or a contribution notice.",
+    "whatToDo": [
+      "If this is an annual statement (Renteninformation): review your recorded contribution years for accuracy",
+      "If this is a formal decision (Bescheid): check whether the amount or dates are correct",
+      "If anything is wrong: file a Widerspruch within 1 month",
+      "Foreign contribution periods (from your home country) may count — ask about Versicherungszeiten im Ausland"
+    ],
+    "consequence": "Errors in pension records compound over decades. A missed Widerspruch deadline makes incorrect calculations legally final.",
+    "deadlineRule": "1_month",
+    "replyTemplateId": "widerspruch_rentenversicherung",
+    "freeHelp": [
+      "Deutsche Rentenversicherung Beratung — free advisory appointments (deutsche-rentenversicherung.de)",
+      "VdK — pension advice for members (vdk.de)",
+      "SoVD — Sozialverband, free pension guidance (sovd.de)"
+    ]
+  },
+  {
+    "id": "jobcenter_bewilligung",
+    "label": "Jobcenter – Benefit Approval",
+    "labelDe": "Jobcenter – Bewilligungsbescheid",
+    "urgency": "low",
+    "senderPatterns": ["Jobcenter", "Agentur für Arbeit", "Bundesagentur für Arbeit"],
+    "subjectPatterns": ["Bewilligungsbescheid", "Weiterbewilligungsbescheid", "Bürgergeld bewilligt", "Arbeitslosengeld bewilligt"],
+    "bodyPatterns": ["Bewilligung", "bewilligt", "Bürgergeld", "ALG I", "ALG II", "Bewilligungszeitraum", "SGB II", "SGB III"],
+    "whatItIs": "Your benefit approval notice (Bewilligungsbescheid) from the Jobcenter or Agentur für Arbeit. This confirms the amount you will receive and for how long.",
+    "whatToDo": [
+      "Check the monthly amount and the approval period (Bewilligungszeitraum) — is everything correct?",
+      "Check that your bank account details are correct for payment",
+      "File this document — you may need it for other applications (Wohngeld, Kita, etc.)",
+      "If anything is wrong: file a Widerspruch within 1 month"
+    ],
+    "consequence": "If you do not report changes in income or living situation (Änderungsmitteilung), overpaid benefits will be reclaimed in full.",
+    "deadlineRule": "1_month",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Jobcenter Beratung — free at your local Jobcenter",
+      "VdK / SoVD — free social law advice for members",
+      "Caritas / AWO — free social counselling including benefit advice"
+    ]
+  },
+  {
+    "id": "jobcenter_aufhebung",
+    "label": "Jobcenter – Benefit Cancellation",
+    "labelDe": "Jobcenter – Aufhebungs- oder Änderungsbescheid",
+    "urgency": "critical",
+    "senderPatterns": ["Jobcenter", "Agentur für Arbeit", "Bundesagentur für Arbeit"],
+    "subjectPatterns": ["Aufhebungsbescheid", "Änderungsbescheid", "Aufhebung der Bewilligung", "Einstellung der Leistungen", "Rückforderung"],
+    "bodyPatterns": ["Aufhebung", "aufgehoben", "Rückforderung", "zurückzuzahlen", "§ 48 SGB X", "§ 45 SGB X", "§ 40 SGB II", "Erstattung", "Überzahlung"],
+    "whatItIs": "The Jobcenter is cancelling or reducing your benefits — or demanding repayment of past payments (Rückforderung). This is a critical letter that directly affects your income.",
+    "whatToDo": [
+      "Act immediately — you have 1 month to file a Widerspruch",
+      "Read the reason (Begründung) carefully — is it factually correct?",
+      "If the reason is wrong: file a Widerspruch in writing within 1 month with your counter-evidence",
+      "If you cannot pay a repayment demand: request a payment plan (Ratenzahlung) immediately — this is your right",
+      "Seek advice from a social counselling service before the deadline"
+    ],
+    "consequence": "Missing the 1-month Widerspruch deadline makes the cancellation legally final. Repayment demands become enforceable debts that can lead to garnishment.",
+    "deadlineRule": "1_month",
+    "replyTemplateId": "widerspruch_jobcenter",
+    "freeHelp": [
+      "VdK — free urgent Widerspruch assistance for members (vdk.de)",
+      "SoVD — free social law advice (sovd.de)",
+      "Caritas / AWO — free urgent counselling including Widerspruch help",
+      "Sozialberatung — find your local free advice centre at wegweiser-buergergesellschaft.de"
+    ]
+  },
+  {
+    "id": "jobcenter_sanktion",
+    "label": "Jobcenter – Sanction Notice",
+    "labelDe": "Jobcenter – Sanktionsbescheid",
+    "urgency": "critical",
+    "senderPatterns": ["Jobcenter", "Bundesagentur für Arbeit"],
+    "subjectPatterns": ["Sanktionsbescheid", "Sanktion", "Minderung", "Leistungsminderung", "Pflichtverletzung"],
+    "bodyPatterns": ["Sanktion", "Pflichtverletzung", "Minderung", "§ 31 SGB II", "Meldeversäumnis", "Eingliederungsvereinbarung", "zumutbare Arbeit"],
+    "whatItIs": "A sanction notice from the Jobcenter. Your benefits are being reduced — typically by 10–30% — because the Jobcenter claims you missed an appointment, refused suitable work, or violated your Eingliederungsvereinbarung.",
+    "whatToDo": [
+      "Act immediately — you have 1 month to file a Widerspruch",
+      "Check the reason: was the appointment notice properly delivered? Was the reason for missing it valid (illness, emergency)?",
+      "If you had a valid reason: submit proof (doctor's note, etc.) with your Widerspruch",
+      "If you were ill when the appointment was missed: a Widerspruch with sick note is usually successful",
+      "Contact a social counselling service for help drafting the Widerspruch"
+    ],
+    "consequence": "If not contested, your Bürgergeld is reduced for 3 months. For repeated violations, reductions can reach 30%. Missing the Widerspruch deadline makes the sanction final.",
+    "deadlineRule": "1_month",
+    "replyTemplateId": "widerspruch_jobcenter",
+    "freeHelp": [
+      "VdK — free Widerspruch help for sanctions (vdk.de)",
+      "SoVD — social law advice (sovd.de)",
+      "Tacheles e.V. — specialist Jobcenter law information and forums (tacheles-sozialhilfe.de)",
+      "Caritas / AWO — free urgent counselling"
+    ]
+  },
+  {
+    "id": "jobcenter",
+    "label": "Jobcenter / Unemployment Notice",
+    "labelDe": "Jobcenter / Agentur für Arbeit – Bescheid",
+    "urgency": "critical",
+    "senderPatterns": ["Jobcenter", "Agentur für Arbeit", "Bundesagentur für Arbeit", "Arbeitsagentur"],
+    "subjectPatterns": ["Eingliederungsvereinbarung", "Aufforderung", "Mitwirkungspflicht", "Stellensuche"],
+    "bodyPatterns": ["Jobcenter", "Bürgergeld", "ALG II", "Arbeitslosengeld", "SGB II", "SGB III", "Eingliederungsvereinbarung"],
+    "whatItIs": "A letter from the Jobcenter or Arbeitsagentur about your unemployment benefits or obligations. Read carefully to identify whether this requires action — it may be a document request, an obligation to attend an appointment, or a general notice.",
+    "whatToDo": [
+      "Read very carefully — this directly affects your income",
+      "If documents are requested: submit them immediately by the stated deadline",
+      "If this is an Eingliederungsvereinbarung: review carefully before signing — you can negotiate terms",
+      "If benefits are being changed: you have 1 month to file a Widerspruch",
+      "Contact a social advice service (Sozialberatung) if you are unsure"
+    ],
+    "consequence": "Missing deadlines or appointments with the Jobcenter can lead to sanctions (Leistungsminderung). Missing Widerspruch deadlines permanently loses your right to appeal.",
+    "deadlineRule": "1_month",
+    "replyTemplateId": "widerspruch_jobcenter",
+    "freeHelp": [
+      "VdK / SoVD — free social law advice and Widerspruch help",
+      "Caritas / AWO — free counselling centres throughout Germany",
+      "Tacheles e.V. — specialist Jobcenter and SGB II information (tacheles-sozialhilfe.de)"
+    ]
+  },
+  {
+    "id": "elterngeld",
+    "label": "Parental Benefit Notice",
+    "labelDe": "Elterngeld – Bescheid",
+    "urgency": "high",
+    "senderPatterns": ["Elterngeldstelle", "Landesamt für Soziales", "Versorgungsamt", "BAFE", "Bezirksamt", "Amt für Familie"],
+    "subjectPatterns": ["Elterngeld", "Elterngeldplus", "Basiselterngeld", "Elterngeldbescheid", "Partnerschaftsbonus"],
+    "bodyPatterns": ["Elterngeld", "ElterngeldPlus", "Basiselterngeld", "BEEG", "§ 2 BEEG", "Partnerschaftsbonus", "Lebensmonat", "Bezugszeitraum"],
+    "whatItIs": "A decision on your Elterngeld (parental benefit). This could be an approval, rejection, or adjustment of your Basiselterngeld or ElterngeldPlus. Elterngeld replaces up to 67% of your net income during parental leave.",
+    "whatToDo": [
+      "Check the monthly amount — is the calculation based on the correct pre-birth income (average of last 12 months)?",
+      "Check the approved months — have you and your partner's Elterngeldmonate been correctly allocated?",
+      "If the amount or months are wrong: file a Widerspruch within 1 month",
+      "If you received Mutterschaftsgeld: check it was correctly deducted (it should be)",
+      "Keep this letter — you will need it for Kindergeld, Kita applications, and tax filings"
+    ],
+    "consequence": "Errors in Elterngeld calculations are common and often favour the state. A missed Widerspruch deadline makes the decision final. Overpaid Elterngeld must be repaid in full.",
+    "deadlineRule": "1_month",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Elterngeldstelle — free recalculation appointment at your local office",
+      "Familienkasse — questions about Kindergeld alongside Elterngeld",
+      "VdK / SoVD — free Widerspruch help if the decision is wrong",
+      "Caritas Migrationsberatung (MBE) — free advice for immigrants on parental benefits"
+    ]
+  },
+  {
+    "id": "arbeitgeber_kuendigung",
+    "label": "Employer Termination Notice",
+    "labelDe": "Kündigung vom Arbeitgeber",
+    "urgency": "critical",
+    "senderPatterns": ["GmbH", "AG", "KG", "OHG", "e.K.", "Arbeitgeber", "Geschäftsführung", "Personalleitung", "HR"],
+    "subjectPatterns": ["Kündigung", "Kündigung des Arbeitsverhältnisses", "außerordentliche Kündigung", "fristlose Kündigung", "ordentliche Kündigung", "Aufhebungsvertrag"],
+    "bodyPatterns": ["Kündigung", "Arbeitsverhältnis", "Kündigungsfrist", "KSchG", "§ 622 BGB", "Betriebsrat", "Abfindung", "fristlos", "außerordentlich"],
+    "whatItIs": "A termination notice from your employer (Kündigung). This may be an ordinary termination with notice period (ordentliche Kündigung) or immediate termination for serious cause (fristlose Kündigung). This is one of the most time-critical letters in German employment law.",
+    "whatToDo": [
+      "You have exactly 3 weeks (21 days) from receiving this letter to file a Kündigungsschutzklage at the Arbeitsgericht — this deadline is absolute",
+      "Contact a lawyer (Arbeitsrecht) or the Gewerkschaft IMMEDIATELY — same day",
+      "Do not sign any Aufhebungsvertrag or Abfindungsvereinbarung before getting legal advice",
+      "Register as job-seeking (arbeitssuchend) at the Agentur für Arbeit within 3 days of receiving this letter to avoid reduction in unemployment benefits",
+      "Document everything: when you received the letter, how (in person / by post)"
+    ],
+    "consequence": "Missing the 3-week Kündigungsschutzklage deadline means you permanently lose the right to contest the termination — even if it was completely illegal. The termination becomes final regardless of legal merit.",
+    "deadlineRule": "14_days_from_delivery",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "DGB / Gewerkschaft — if you are a union member, you get free legal representation immediately",
+      "Arbeitsgericht — you can file the Klage yourself at the court if needed (no lawyer required at first instance)",
+      "Beratungshilfe — if low income, get a voucher from your local Amtsgericht for free lawyer advice",
+      "Agentur für Arbeit — register as arbeitssuchend within 3 days to protect your ALG I entitlement"
+    ]
+  },
+  {
+    "id": "auslaenderbehoerde",
+    "label": "Immigration Office Notice",
+    "labelDe": "Ausländerbehörde – Bescheid / Anforderung",
+    "urgency": "critical",
+    "senderPatterns": ["Ausländerbehörde", "Einwanderungsbehörde", "Ausländeramt", "Landesamt für Einwanderung"],
+    "subjectPatterns": ["Aufenthaltstitel", "Aufenthaltserlaubnis", "Niederlassungserlaubnis", "Ablehnung", "Ausweisung", "Visum"],
+    "bodyPatterns": ["Ausländerbehörde", "Aufenthaltstitel", "§ 51 AufenthG", "Abschiebung", "Klageschrift", "Verwaltungsgericht"],
+    "whatItIs": "A letter from the immigration authority (Ausländerbehörde) about your residence status in Germany. This could be a request for documents, a decision on your residence permit, or in serious cases a notice of deportation.",
+    "whatToDo": [
+      "Treat this as the highest priority — act the same day",
+      "If documents are requested: gather and submit them immediately — missing immigration deadlines has severe consequences",
+      "If a permit is being denied or revoked: consult an immigration lawyer (Fachanwalt für Ausländerrecht) immediately",
+      "Deadlines in immigration law are typically very short (1–4 weeks)",
+      "Send all replies by registered mail (Einschreiben mit Rückschein)"
+    ],
+    "consequence": "Ignoring immigration authority letters can result in losing your right to stay in Germany. Missing appeal deadlines can make negative decisions final and lead to forced departure.",
+    "deadlineRule": "explicit_immediate",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Migrationsberatung für erwachsene Zuwanderer (MBE) — FREE immigration advice, Caritas / AWO / Diakonie offer this nationwide",
+      "Fachanwalt für Ausländerrecht — immigration law specialist; Beratungshilfe available if low income",
+      "BAMF Beratungsstellen — bundesamt-fuer-migration.de for local advice centres",
+      "Faire Integration — free and independent counselling for migrants (faire-integration.de)"
+    ]
+  },
+  {
+    "id": "einbuergerung",
+    "label": "Naturalisation Notice",
+    "labelDe": "Einbürgerungsbescheid",
+    "urgency": "high",
+    "senderPatterns": ["Einbürgerungsbehörde", "Ausländerbehörde", "Standesamt", "Landratsamt", "Bürgeramt"],
+    "subjectPatterns": ["Einbürgerung", "Einbürgerungsantrag", "Einbürgerungsbescheid", "Staatsangehörigkeit", "Naturalisation"],
+    "bodyPatterns": ["Einbürgerung", "Staatsangehörigkeit", "StAG", "§ 10 StAG", "Einbürgerungstest", "Sprachkenntnisse", "Niederlassungserlaubnis"],
+    "whatItIs": "A letter about your naturalisation (Einbürgerung) application for German citizenship. This may be a request for additional documents, an invitation to collect your Einbürgerungsurkunde, or in some cases a rejection.",
+    "whatToDo": [
+      "If documents are requested: submit them promptly — delays can stall your application for months",
+      "If this is an invitation to collect your certificate: bring your current foreign passport and all requested documents",
+      "On the day of naturalisation: your foreign passport may be confiscated (if Germany does not allow dual nationality with your country)",
+      "If the application is rejected: you have 1 month to file a Widerspruch, then Klage at Verwaltungsgericht",
+      "Philippines: Germany generally allows dual nationality with the Philippines — confirm with your Einbürgerungsbehörde"
+    ],
+    "consequence": "Missing document submission deadlines can result in your application being closed. Missing a rejection appeal deadline makes the refusal final.",
+    "deadlineRule": "explicit_or_1_month",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Migrationsberatung (MBE) — free advice on Einbürgerung process, Caritas / AWO / Diakonie",
+      "Faire Integration — independent immigration counselling (faire-integration.de)",
+      "Bundesverwaltungsamt — for Staatsangehörigkeitsfragen (bundesverwaltungsamt.de)"
+    ]
+  },
+  {
+    "id": "kita_bescheid",
+    "label": "Childcare Place Decision",
+    "labelDe": "Kita / Kindergarten – Zusage oder Absage",
+    "urgency": "high",
+    "senderPatterns": ["Kita", "Kindergarten", "Kindertagesstätte", "Jugendamt", "Kita-Portal", "Kita-Navigator"],
+    "subjectPatterns": ["Kita", "Kindergartenplatz", "Betreuungsplatz", "Zusage", "Absage", "Warteliste", "Anmeldung"],
+    "bodyPatterns": ["Kita", "Kindergarten", "Kindertagesstätte", "Betreuungsplatz", "Betreuungsvertrag", "Jugendamt", "§ 24 SGB VIII", "Rechtsanspruch"],
+    "whatItIs": "A decision on your childcare place application (Kita/Kindergarten). This is either a Zusage (acceptance) or Absage (rejection). Every child in Germany has a legal right to a childcare place from age 1 (§ 24 SGB VIII).",
+    "whatToDo": [
+      "If this is a Zusage (acceptance): respond by the stated deadline to confirm — spots are given to the next family if you do not confirm",
+      "If this is an Absage (rejection): you have a legal right to a place — contact the Jugendamt immediately to enforce your Rechtsanspruch",
+      "If you cannot find a place: file a formal request (Antrag) with the Jugendamt in writing — they are legally obligated to find you one",
+      "If rejected and you need the place urgently: a lawyer can file for einstweiligen Rechtsschutz (emergency court order) quickly"
+    ],
+    "consequence": "Not confirming a Zusage by the deadline means losing the spot. Failing to assert your Rechtsanspruch can leave you without childcare — which affects your ability to work or attend language courses.",
+    "deadlineRule": "explicit_or_14_days",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Jugendamt — your local Jugendamt is legally obligated to help you find a Kita place",
+      "Caritas / AWO / Diakonie — many operate Kitas and can advise on applications",
+      "Familienzentrum — local family support centres often assist with Kita navigation"
+    ]
+  },
+  {
+    "id": "wohngeld",
+    "label": "Housing Benefit Notice",
+    "labelDe": "Wohngeld – Bescheid",
+    "urgency": "medium",
+    "senderPatterns": ["Wohngeldstelle", "Wohngeldbehörde", "Stadtverwaltung", "Gemeinde", "Amt für Wohnen"],
+    "subjectPatterns": ["Wohngeld", "Wohngeldbescheid", "Mietzuschuss", "Lastenzuschuss", "Wohngeldantrag"],
+    "bodyPatterns": ["Wohngeld", "Mietzuschuss", "Lastenzuschuss", "§ 3 WoGG", "Wohngeldgesetz", "Haushaltsmitglieder", "zuschussfähige Miete"],
+    "whatItIs": "A housing benefit (Wohngeld) decision from your local authority. Wohngeld is a state rent subsidy for low-income households who do not receive Bürgergeld. Since 2023, the amounts were significantly increased and more people qualify.",
+    "whatToDo": [
+      "If approved: check the monthly amount and the approval period — re-apply before it expires",
+      "If rejected: check the reason — are all household members and income figures correct?",
+      "If rejected and you think you qualify: file a Widerspruch within 1 month with corrected documentation",
+      "Report any income changes promptly — overpaid Wohngeld must be repaid"
+    ],
+    "consequence": "Undisclosed income changes lead to repayment demands. Missing the re-application deadline causes payment gaps. A missed Widerspruch deadline makes the rejection final.",
+    "deadlineRule": "explicit_or_1_month",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Wohngeldstelle — free advice at your local authority office",
+      "Verbraucherzentrale — Wohngeld eligibility calculator and advice",
+      "Caritas / AWO — free counselling on housing benefits"
+    ]
+  },
+  {
+    "id": "rundfunkbeitrag",
+    "label": "Broadcasting Fee (ARD/ZDF)",
+    "labelDe": "Rundfunkbeitrag – ARD ZDF Deutschlandradio Beitragsservice",
+    "urgency": "low",
+    "senderPatterns": ["Beitragsservice", "ARD ZDF Deutschlandradio", "Rundfunkbeitrag", "GEZ"],
+    "subjectPatterns": ["Rundfunkbeitrag", "Beitragsservice", "Befreiung", "Ermäßigung"],
+    "bodyPatterns": ["Rundfunkbeitrag", "Beitragsservice", "Befreiung", "Haushalt", "18,36"],
+    "whatItIs": "A letter from the German public broadcasting fee service (Beitragsservice, formerly GEZ). Currently €18.36/month per household. This may be a payment request, confirmation, or exemption notice.",
+    "whatToDo": [
+      "If you are already registered and paying: this is likely a confirmation — file it",
+      "If you are not yet registered: you must register (every household must pay unless exempt)",
+      "If you qualify for exemption (receiving Bürgergeld, BAföG, etc.): apply for Befreiung — you get a full exemption"
+    ],
+    "consequence": "Unpaid broadcasting fees become an enforceable debt. The Beitragsservice can apply for a court enforcement order after 6 months of non-payment.",
+    "deadlineRule": "explicit_or_30_days",
+    "replyTemplateId": "rundfunkbeitrag_befreiung",
+    "freeHelp": [
+      "Beitragsservice — free exemption application at rundfunkbeitrag.de",
+      "Verbraucherzentrale — guidance on who qualifies for Befreiung"
+    ]
+  },
+  {
+    "id": "vermieter_kuendigung",
+    "label": "Landlord Notice / Termination",
+    "labelDe": "Kündigung / Abmahnung vom Vermieter",
+    "urgency": "critical",
+    "senderPatterns": ["Vermieter", "Hausverwaltung", "Immobilienverwaltung", "Wohnungsbaugesellschaft"],
+    "subjectPatterns": ["Kündigung", "Abmahnung", "außerordentliche Kündigung", "fristlose Kündigung", "Mietvertrag"],
+    "bodyPatterns": ["Kündigung", "Abmahnung", "Mietrückstand", "§ 543 BGB", "§ 573 BGB", "räumen"],
+    "whatItIs": "A termination notice or formal warning from your landlord. This may be a regular termination (ordentliche Kündigung) requiring a notice period, or an immediate termination (fristlose Kündigung) for serious breaches like rent arrears.",
+    "whatToDo": [
+      "Consult a Mieterverein (tenant association) or lawyer immediately — same day",
+      "Do NOT move out without legal advice — you may be able to challenge the termination",
+      "If due to rent arrears: you may have a window to pay and prevent eviction",
+      "Document everything in writing from this point forward",
+      "Do NOT sign any agreement under pressure without legal advice"
+    ],
+    "consequence": "A valid termination must be contested through legal channels. Failing to act can lead to a court eviction order (Räumungsklage).",
+    "deadlineRule": "explicit_immediate",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Mieterverein / Mieterbund — tenant association, very affordable membership, free legal advice (mieterbund.de)",
+      "Verbraucherzentrale — free initial housing law advice",
+      "Beratungshilfe — if low income, courts issue free lawyer advice vouchers (Beratungshilfeschein)"
+    ]
+  },
+  {
+    "id": "nebenkosten",
+    "label": "Utility Bill Settlement",
+    "labelDe": "Nebenkostenabrechnung",
+    "urgency": "medium",
+    "senderPatterns": ["Vermieter", "Hausverwaltung", "Immobilienverwaltung"],
+    "subjectPatterns": ["Nebenkostenabrechnung", "Betriebskostenabrechnung", "Heizkostenabrechnung", "Jahresabrechnung"],
+    "bodyPatterns": ["Nebenkosten", "Betriebskosten", "Heizkosten", "Nachzahlung", "Guthaben", "Abrechnungszeitraum"],
+    "whatItIs": "Your annual utility cost settlement (Nebenkostenabrechnung) from your landlord. It calculates the actual costs for heating, water, waste, etc. vs. your monthly advance payments.",
+    "whatToDo": [
+      "Check whether you owe money (Nachzahlung) or get a refund (Guthaben)",
+      "You have 12 months from receiving this letter to dispute any errors",
+      "Check: is every cost item legally allowed? Verwaltungskosten are NOT allowed to be charged to tenants",
+      "Request receipts (Belegeinsicht) for any cost you want to verify — this is your legal right",
+      "If you want an independent check: contact your local Mieterverein"
+    ],
+    "consequence": "93% of Nebenkostenabrechnungen contain errors — almost always in the landlord's favour. The average overcharge is €515/year. Miss the 12-month dispute window and you lose the right to object permanently.",
+    "deadlineRule": "12_months_from_receipt",
+    "replyTemplateId": "widerspruch_nebenkosten",
+    "freeHelp": [
+      "Mieterverein / Mieterbund — professional Nebenkostenabrechnung review (mieterbund.de)",
+      "Verbraucherzentrale — Nebenkosten check service available in many states",
+      "Heizspiegel — benchmark your heating costs against average (heizspiegel.de)"
+    ]
+  },
+  {
+    "id": "rechnung",
+    "label": "Invoice",
+    "labelDe": "Rechnung",
+    "urgency": "medium",
+    "senderPatterns": [],
+    "subjectPatterns": ["Rechnung", "Invoice", "Rechnungsnummer", "RE-"],
+    "bodyPatterns": ["Rechnung", "Rechnungsdatum", "Zahlungsziel", "Bankverbindung", "IBAN", "Netto", "Brutto", "MwSt", "USt"],
+    "whatItIs": "An invoice requesting payment for goods or services delivered.",
+    "whatToDo": [
+      "Verify the invoice: does it match what was agreed? Is the amount correct?",
+      "Pay by the stated due date (Zahlungsziel) to avoid late fees",
+      "If something is wrong: contact the sender in writing before the due date"
+    ],
+    "consequence": "Unpaid invoices become a Mahnung (payment reminder) and eventually can lead to court proceedings. Late payment may trigger interest at 5–9% above the base rate.",
+    "deadlineRule": "explicit",
+    "replyTemplateId": "rechnung_einwand",
+    "freeHelp": [
+      "Verbraucherzentrale — free advice on disputing incorrect invoices"
+    ]
+  },
+  {
+    "id": "versicherung_anforderung",
+    "label": "Insurance Request",
+    "labelDe": "Versicherung – Anforderung / Bescheid",
+    "urgency": "medium",
+    "senderPatterns": ["Versicherung", "Allianz", "AXA", "HUK", "DEVK", "Generali", "Zurich", "Ergo", "R+V", "Nürnberger"],
+    "subjectPatterns": ["Versicherung", "Police", "Schadensmeldung", "Beitragsanpassung", "Kündigung"],
+    "bodyPatterns": ["Versicherung", "Police", "Versicherungsschutz", "Beitrag", "Prämie", "Schadenfall", "VVG"],
+    "whatItIs": "A letter from your insurance company. This could be a document request for a claim, a premium increase notice, or a policy change.",
+    "whatToDo": [
+      "Identify the type: is this a claim response, premium change, or document request?",
+      "If documents are requested for a claim: submit them promptly",
+      "If your premium is being raised: you have a Sonderkündigungsrecht — usually 1 month to cancel",
+      "If a claim is denied: you have the right to contest within 1 month"
+    ],
+    "consequence": "Ignored document requests in open claims can lead to claim rejection. Premium increase non-responses confirm acceptance of the new rate.",
+    "deadlineRule": "explicit_or_1_month",
+    "replyTemplateId": "widerspruch_versicherung",
+    "freeHelp": [
+      "Versicherungsombudsmann — free out-of-court dispute resolution (versicherungsombudsmann.de)",
+      "Verbraucherzentrale — free insurance dispute advice"
+    ]
+  },
+  {
+    "id": "bank_brief",
+    "label": "Bank Letter",
+    "labelDe": "Bankbrief / Kontoschreiben",
+    "urgency": "medium",
+    "senderPatterns": ["Bank", "Sparkasse", "Volksbank", "Deutsche Bank", "Commerzbank", "DKB", "ING", "Comdirect", "Postbank", "N26"],
+    "subjectPatterns": ["Kontoauszug", "Kreditvertrag", "Darlehen", "Kündigung", "Pfändung", "Kontopfändung"],
+    "bodyPatterns": ["Konto", "IBAN", "BIC", "Kredit", "Darlehen", "Saldo", "Überziehung", "Pfändung"],
+    "whatItIs": "A letter from your bank. This could be about your account balance, a loan, a change in terms, or in serious cases, an account freezing or garnishment notice.",
+    "whatToDo": [
+      "If this is about an overdraft (Überziehung): pay as soon as possible — overdraft interest is very high",
+      "If this is a loan change: check the new terms carefully before accepting",
+      "If your account is being frozen (Pfändung): contact a debt counsellor (Schuldnerberatung) immediately and convert to P-Konto"
+    ],
+    "consequence": "Ignored overdraft notices lead to credit reporting (SCHUFA). A frozen account can leave you without access to funds for basic needs until resolved.",
+    "deadlineRule": "explicit_or_14_days",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Schuldnerberatung — free debt counselling if account is being seized (schuldnerberatung.de)",
+      "Verbraucherzentrale — free banking dispute advice",
+      "Ombudsmann der privaten Banken — free complaint resolution for bank disputes"
+    ]
+  },
+  {
+    "id": "gerichtsbescheid",
+    "label": "Court Notice",
+    "labelDe": "Gerichtsbescheid / Gerichtsschreiben",
+    "urgency": "critical",
+    "senderPatterns": ["Amtsgericht", "Landgericht", "Oberlandesgericht", "Verwaltungsgericht", "Gericht"],
+    "subjectPatterns": ["Klage", "Urteil", "Beschluss", "Ladung", "Gerichtstermin", "Vollstreckungsbescheid"],
+    "bodyPatterns": ["Gericht", "Klage", "Kläger", "Beklagter", "Urteil", "Beschluss", "ZPO", "Vollstreckung"],
+    "whatItIs": "An official court document. This could be a lawsuit filed against you, a court ruling, a summons to appear, or an enforcement order.",
+    "whatToDo": [
+      "Treat this as the absolute highest priority — consult a lawyer today",
+      "Note all deadlines on this letter — court deadlines are strict and cannot be extended casually",
+      "Do NOT ignore any court document under any circumstances",
+      "Send all replies by registered mail (Einschreiben mit Rückschein)"
+    ],
+    "consequence": "Ignoring court documents leads to default judgements against you. These can be immediately enforced — wages and bank accounts can be seized without further warning.",
+    "deadlineRule": "explicit_immediate",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Rechtsanwalt — mandatory; get one immediately",
+      "Beratungshilfe — if low income, get a Beratungshilfeschein from your local Amtsgericht for free legal advice",
+      "Prozesskostenhilfe (PKH) — court may cover legal costs if you have low income; apply before the hearing",
+      "Rechtsanwaltskammer — find a lawyer at rechtsanwaltskammer.de"
+    ]
+  },
+  {
+    "id": "stromanbieter",
+    "label": "Electricity / Utility Provider",
+    "labelDe": "Strom / Gas / Internet – Anbieter",
+    "urgency": "low",
+    "senderPatterns": ["Stadtwerke", "E.ON", "RWE", "EnBW", "Vattenfall", "Telekom", "Vodafone", "O2", "1&1", "Unitymedia"],
+    "subjectPatterns": ["Abschlagserhöhung", "Jahresabrechnung", "Kündigung", "Vertragsverlängerung", "Tarifwechsel"],
+    "bodyPatterns": ["Abschlag", "Jahresverbrauch", "kWh", "Kilowattstunde", "Tarif", "Grundpreis", "Arbeitspreis"],
+    "whatItIs": "A letter from your electricity, gas, or internet provider. Most commonly an annual settlement, a price increase notice, or a contract renewal.",
+    "whatToDo": [
+      "If this is a price increase: you have a Sonderkündigungsrecht — usually 4 weeks to cancel and switch provider",
+      "If this is an annual settlement with an additional payment: verify the meter reading is correct",
+      "If this is a contract auto-renewal notice: decide within the stated window whether to switch providers"
+    ],
+    "consequence": "Missing a price increase cancellation window locks you in at the new rate. Unpaid energy bills can lead to supply disconnection after formal warning.",
+    "deadlineRule": "explicit_or_30_days",
+    "replyTemplateId": "kuendigung_vertrag",
+    "freeHelp": [
+      "Verbraucherzentrale — free utility provider switching advice and contract templates",
+      "Bundesnetzagentur — complaints about utility providers (bundesnetzagentur.de)"
+    ]
+  },
+  {
+    "id": "kindergeld",
+    "label": "Child Benefit Notice",
+    "labelDe": "Kindergeld – Familienkasse",
+    "urgency": "medium",
+    "senderPatterns": ["Familienkasse", "Agentur für Arbeit Familienkasse"],
+    "subjectPatterns": ["Kindergeld", "Aufhebungsbescheid", "Rückforderung", "Weiterbewilligungsbescheid"],
+    "bodyPatterns": ["Kindergeld", "Familienkasse", "§ 62 EStG", "Rückforderung", "Einkommensgrenze"],
+    "whatItIs": "A letter from the Familienkasse about your child benefit (Kindergeld). This may be a continued approval, a cancellation, or a demand to repay past payments.",
+    "whatToDo": [
+      "If this is an approval: file it for your records",
+      "If this is a cancellation or reduction: check whether the reason is correct",
+      "If they are demanding repayment (Rückforderung): this is serious — respond or contest within 1 month",
+      "If your child's circumstances changed (started working, reached 18, etc.): report it to avoid overpayment demands"
+    ],
+    "consequence": "Overpaid Kindergeld must be repaid in full. Missing the Widerspruch deadline makes the demand final.",
+    "deadlineRule": "1_month",
+    "replyTemplateId": "widerspruch_familienkasse",
+    "freeHelp": [
+      "Familienkasse — free advice at your local office (arbeitsagentur.de)",
+      "Lohnsteuerhilfe — helps with Kindergeld and tax interactions",
+      "Caritas Migrationsberatung (MBE) — free guidance for immigrant families on Kindergeld entitlement"
+    ]
+  },
+  {
+    "id": "bafög",
+    "label": "Student Financial Aid",
+    "labelDe": "BAföG – Amt für Ausbildungsförderung",
+    "urgency": "high",
+    "senderPatterns": ["Studentenwerk", "Amt für Ausbildungsförderung", "BAföG"],
+    "subjectPatterns": ["BAföG", "Ausbildungsförderung", "Bewilligungsbescheid", "Ablehnungsbescheid", "Rückzahlung"],
+    "bodyPatterns": ["BAföG", "Ausbildungsförderung", "§ 18 BAföG", "Rückzahlung", "Förderungshöchstdauer"],
+    "whatItIs": "A letter about your student financial aid (BAföG). This could be an approval, a rejection, a request to re-apply, or a repayment notice.",
+    "whatToDo": [
+      "If approved: check the amount and the period — update your application if circumstances change",
+      "If rejected: you can appeal (Widerspruch) within 1 month",
+      "If this is a repayment notice: BAföG is partially a loan — repayment begins 5 years after the end of your studies"
+    ],
+    "consequence": "Missing re-application deadlines can cause gaps in your BAföG payments. Missing Widerspruch deadlines makes rejections final.",
+    "deadlineRule": "1_month",
+    "replyTemplateId": "widerspruch_bafög",
+    "freeHelp": [
+      "Studentenwerk — BAföG office at your university (studentenwerk.de)",
+      "AStA / StuRa — free student counselling on BAföG",
+      "BAföG-Rechner — eligibility calculator at bafoeg-rechner.de"
+    ]
+  },
+  {
+    "id": "ust_id",
+    "label": "VAT ID Notice",
+    "labelDe": "Umsatzsteuer-Identifikationsnummer (USt-IdNr)",
+    "urgency": "medium",
+    "senderPatterns": ["Bundeszentralamt für Steuern", "Bundeszentralamt", "BZSt"],
+    "subjectPatterns": ["Umsatzsteuer-Identifikationsnummer", "USt-IdNr", "USt-Identifikationsnummer", "Umsatzsteueridentifikationsnummer", "Erteilung einer Umsatzsteuer", "Bescheid über die Erteilung"],
+    "bodyPatterns": ["USt-IdNr", "Umsatzsteuer-Identifikationsnummer", "§ 27a UStG", "Umsatzsteuergesetz", "innergemeinschaftlich", "zugeteilt", "erteilt", "Erteilung", "wird Ihnen mitgeteilt", "gültig ab", "gültig bis"],
+    "whatItIs": "This is your official Umsatzsteuer-Identifikationsnummer (USt-IdNr) — your EU VAT identification number. The Bundeszentralamt für Steuern has issued this number under § 27a Umsatzsteuergesetz. It is valid indefinitely unless cancelled. This is NOT a payment request and requires no action from you.",
+    "whatToDo": [
+      "Store this letter permanently — it is your official proof of your USt-IdNr",
+      "Add your USt-IdNr to all invoices you issue to business customers in other EU countries",
+      "Give the number to your Steuerberater if you have one",
+      "No deadline, no payment required — this is purely informational"
+    ],
+    "consequence": "No immediate consequence — this letter requires no response. However, you must use your USt-IdNr on EU invoices. Invoices without it may be treated as invalid for VAT purposes by EU tax authorities.",
+    "deadlineRule": "explicit",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Bundeszentralamt für Steuern — USt-IdNr queries at bzst.de",
+      "Steuerberater — for guidance on using your USt-IdNr correctly on EU invoices"
+    ]
+  },
+  {
+    "id": "steuer_id",
+    "label": "Tax ID / BZSt Notice",
+    "labelDe": "Steueridentifikationsnummer – Bundeszentralamt für Steuern",
+    "urgency": "low",
+    "senderPatterns": ["Bundeszentralamt für Steuern", "BZSt", "Bundeszentralamt"],
+    "subjectPatterns": ["Steueridentifikationsnummer", "Steuer-Identifikationsnummer", "steuerliche Identifikationsnummer", "IdNr", "Steuer-ID"],
+    "bodyPatterns": ["Steueridentifikationsnummer", "§ 139b", "Abgabenordnung", "IdNr", "steuerliche Identifikation", "Bundeszentralamt", "BZSt"],
+    "whatItIs": "A letter from the Bundeszentralamt für Steuern (BZSt) — Germany's central federal tax office. This is most likely a notification of your Steueridentifikationsnummer (tax ID number), which every person registered in Germany receives automatically.",
+    "whatToDo": [
+      "Store your Steueridentifikationsnummer safely — you will need it for your employer, Finanzamt, and many official forms",
+      "You only receive one Steuer-ID in your lifetime — it never changes, even if you move",
+      "If this is a different type of BZSt notice, read the letter carefully for any stated deadlines or actions required"
+    ],
+    "consequence": "Your Steuer-ID is required for employment and tax filings. Without it, your employer must withhold the highest tax rate (Steuerklasse 6). No immediate deadline in most cases, but store this letter permanently.",
+    "deadlineRule": "explicit",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Bundeszentralamt für Steuern — request your Steuer-ID again at idnr.bzst.de if lost",
+      "Finanzamt — can also help retrieve your Steuer-ID"
+    ]
+  },
+  {
+    "id": "unbekannt",
+    "label": "Unrecognised Letter",
+    "labelDe": "Unbekannter Brief",
+    "urgency": "medium",
+    "senderPatterns": [],
+    "subjectPatterns": [],
+    "bodyPatterns": [],
+    "whatItIs": "This letter could not be automatically identified. The key information has been extracted below — please review it carefully.",
+    "whatToDo": [
+      "Read the full letter carefully",
+      "Look for: a deadline (Frist), an amount (Betrag), and what is being asked of you",
+      "When in doubt, respond or seek advice — never ignore official letters in Germany",
+      "Remember: all formal replies to German authorities must be sent in German, ideally by registered mail (Einschreiben)"
+    ],
+    "consequence": "Unknown — but official letters in Germany always require a response or at least acknowledgement. Ignoring them is almost always worse than responding.",
+    "deadlineRule": "explicit",
+    "replyTemplateId": null,
+    "freeHelp": [
+      "Verbraucherzentrale — general advice on any letter type (verbraucherzentrale.de)",
+      "Caritas Migrationsberatung (MBE) — free help for immigrants understanding German letters",
+      "Beratungshilfe — if low income, courts issue a Beratungshilfeschein for free lawyer consultation on any matter"
+    ]
+  }
+]
