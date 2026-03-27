@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BriefKlar — German Letters, Made Clear</title>
+<meta name="description" content="Scan any German official letter with your phone. BriefKlar reads it, explains what it means, and tells you exactly what to do — free, private, no cloud.">
+<meta property="og:title" content="BriefKlar — German Letters, Made Clear">
+<meta property="og:description" content="Free Windows app. Scan German letters with your phone. Understand deadlines, sender, and next steps instantly. 100% local — no cloud, no account.">
+<meta property="og:image" content="./screenshot.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --teal-50:  #f0fdfa;
+  --teal-100: #ccfbf1;
+  --teal-200: #99f6e4;
+  --teal-400: #2dd4bf;
+  --teal-500: #14b8a6;
+  --teal-600: #0d9488;
+  --teal-700: #0f766e;
+  --teal-800: #115e59;
+  --teal-900: #134e4a;
+  --ink:      #0d1f1e;
+  --ink-60:   rgba(13,31,30,0.6);
+  --ink-30:   rgba(13,31,30,0.3);
+  --surface:  #f8fffe;
+  --white:    #ffffff;
+  --red:      #ef4444;
+  --orange:   #f97316;
+  --amber:    #f59e0b;
+  --green:    #22c55e;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--surface);
+  color: var(--ink);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--teal-100); color: var(--teal-700);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 100px;
+  border: 1px solid var(--teal-200);
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(248,255,254,0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--teal-100);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: 0 4px 24px rgba(13,148,136,0.08); }
+.nav-inner {
+  max-width: 1160px; margin: 0 auto; padding: 0 24px;
+  height: 64px; display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-text { font-weight: 800; font-size: 18px; color: var(--teal-900); }
+.nav-logo-sub { font-size: 10px; color: var(--teal-600); font-weight: 500; margin-top: -2px; }
+.nav-links { display: flex; align-items: center; gap: 32px; }
+.nav-links a {
+  font-size: 14px; font-weight: 500; color: var(--ink-60);
+  text-decoration: none; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--teal-700); }
+.btn-nav {
+  background: var(--teal-600); color: #fff;
+  font-size: 14px; font-weight: 600; padding: 8px 20px;
+  border-radius: 10px; border: none; cursor: pointer;
+  text-decoration: none; transition: background 0.2s, transform 0.1s;
+}
+.btn-nav:hover { background: var(--teal-700); transform: translateY(-1px); }
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  padding: 120px 0 80px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 65% 40%, rgba(20,184,166,0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 15% 70%, rgba(153,246,228,0.12) 0%, transparent 65%),
+    radial-gradient(ellipse 30% 30% at 90% 80%, rgba(15,118,110,0.06) 0%, transparent 60%);
+}
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--teal-100) 1px, transparent 1px),
+    linear-gradient(90deg, var(--teal-100) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.35;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+.hero-inner {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 64px; align-items: center;
+  max-width: 1160px; margin: 0 auto; padding: 0 24px;
+}
+.hero-eyebrow { margin-bottom: 20px; animation: fadeUp 0.6s ease both; }
+.hero-h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(40px, 5vw, 62px); line-height: 1.08;
+  color: var(--teal-900); margin-bottom: 24px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+.hero-h1 em { font-style: italic; color: var(--teal-600); }
+.hero-sub {
+  font-size: 18px; line-height: 1.65; color: var(--ink-60);
+  max-width: 460px; margin-bottom: 36px; font-weight: 400;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+.hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; animation: fadeUp 0.6s 0.3s ease both; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--teal-500), var(--teal-700));
+  color: #fff; font-size: 15px; font-weight: 700;
+  padding: 14px 28px; border-radius: 14px; border: none;
+  cursor: pointer; text-decoration: none;
+  box-shadow: 0 6px 20px rgba(13,148,136,0.35);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(13,148,136,0.45); }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--teal-700); font-size: 14px; font-weight: 600;
+  text-decoration: none; padding: 14px 4px; transition: gap 0.2s;
+}
+.btn-ghost:hover { gap: 12px; }
+.hero-badges {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  margin-top: 28px; padding-top: 28px;
+  border-top: 1px solid var(--teal-100);
+  animation: fadeUp 0.6s 0.4s ease both;
+}
+.hero-badge { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--ink-60); font-weight: 500; }
+.hero-badge svg { color: var(--teal-500); flex-shrink: 0; }
+
+/* HERO VISUAL */
+.hero-visual { position: relative; animation: fadeUp 0.7s 0.2s ease both; }
+.phone-frame {
+  position: absolute; bottom: -20px; right: -16px;
+  width: 120px; height: 200px; background: var(--ink);
+  border-radius: 20px; box-shadow: 0 24px 48px rgba(0,0,0,0.2);
+  overflow: hidden; display: flex; flex-direction: column;
+  animation: floatPhone 4s ease-in-out infinite;
+  border: 3px solid rgba(255,255,255,0.15); z-index: 10;
+}
+@keyframes floatPhone { 0%,100%{transform:translateY(0px) rotate(2deg)} 50%{transform:translateY(-8px) rotate(2deg)} }
+.phone-notch { width: 40px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin: 8px auto 6px; }
+.phone-cam { width: 28px; height: 28px; background: rgba(20,184,166,0.2); border-radius: 50%; margin: 8px auto; border: 2px solid var(--teal-500); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.phone-qr { margin: 6px auto; width: 72px; height: 72px; display: grid; grid-template-columns: repeat(7,1fr); gap: 1.5px; padding: 4px; background: rgba(255,255,255,0.06); border-radius: 6px; }
+.qr-cell { border-radius: 1px; }
+.qr-dark { background: rgba(255,255,255,0.8); }
+.qr-light { background: transparent; }
+.phone-label { font-size: 7px; color: rgba(255,255,255,0.4); text-align: center; margin-top: 4px; font-weight: 500; }
+
+.letter-card {
+  background: #fff; border-radius: 20px;
+  box-shadow: 0 32px 64px rgba(13,148,136,0.12), 0 8px 24px rgba(0,0,0,0.06);
+  padding: 28px; position: relative; overflow: hidden;
+  border: 1px solid var(--teal-100);
+}
+.letter-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: linear-gradient(to bottom, var(--red), var(--orange));
+  border-radius: 4px 0 0 4px;
+}
+.lc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+.lc-badge { display: inline-flex; align-items: center; gap: 6px; background: #fef2f2; color: var(--red); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 100px; border: 1px solid #fecaca; }
+.lc-conf { font-size: 11px; color: #16a34a; font-weight: 600; background: #f0fdf4; padding: 4px 10px; border-radius: 100px; border: 1px solid #bbf7d0; }
+.lc-title { font-size: 15px; font-weight: 700; color: var(--teal-900); margin-bottom: 4px; }
+.lc-sender { font-size: 12px; color: var(--ink-60); margin-bottom: 16px; }
+.lc-fields { display: flex; flex-direction: column; gap: 10px; }
+.lc-field { display: flex; gap: 12px; font-size: 13px; }
+.lc-label { color: var(--ink-30); width: 60px; flex-shrink: 0; }
+.lc-value { color: var(--ink); font-weight: 600; }
+.lc-value.urgent { color: var(--red); }
+.lc-value.amount { color: var(--teal-700); }
+.lc-divider { height: 1px; background: var(--teal-100); margin: 16px 0; }
+.lc-what { font-size: 13px; color: var(--ink-60); line-height: 1.6; margin-bottom: 12px; }
+.lc-steps { display: flex; flex-direction: column; gap: 8px; }
+.lc-step { display: flex; gap: 10px; font-size: 12px; color: var(--ink); }
+.lc-step-num { width: 18px; height: 18px; border-radius: 50%; background: var(--teal-100); color: var(--teal-700); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.lc-actions { display: flex; gap: 8px; margin-top: 18px; }
+.lca { flex: 1; padding: 9px 12px; border-radius: 10px; font-size: 12px; font-weight: 600; text-align: center; cursor: pointer; border: none; }
+.lca-primary { background: var(--teal-600); color: white; }
+.lca-secondary { background: var(--teal-50); color: var(--teal-700); border: 1px solid var(--teal-200); }
+
+.float-chip { position: absolute; background: white; border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); font-size: 13px; font-weight: 600; white-space: nowrap; border: 1px solid var(--teal-100); }
+.chip-1 { top: -16px; right: 80px; animation: chipFloat1 5s ease-in-out infinite; }
+.chip-2 { bottom: 60px; left: -20px; animation: chipFloat2 5.5s ease-in-out infinite; }
+@keyframes chipFloat1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+@keyframes chipFloat2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+.pulse-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); position: relative; }
+.pulse-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: rgba(34,197,94,0.3); animation: pulse 1.8s ease-out infinite; }
+@keyframes pulse { 0%{transform:scale(1);opacity:1} 100%{transform:scale(2.5);opacity:0} }
+
+/* SECTIONS */
+section { padding: 100px 0; }
+.section-tag { margin-bottom: 16px; }
+.section-h2 { font-family: 'DM Serif Display', serif; font-size: clamp(32px, 4vw, 50px); color: var(--teal-900); line-height: 1.12; margin-bottom: 18px; }
+.section-h2 em { font-style: italic; color: var(--teal-600); }
+.section-sub { font-size: 17px; color: var(--ink-60); line-height: 1.65; max-width: 560px; font-weight: 400; }
+
+/* PROBLEM STRIP */
+.problem-strip { background: var(--teal-900); padding: 64px 0; overflow: hidden; position: relative; }
+.problem-strip::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 24px); }
+.problem-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; position: relative; z-index: 1; }
+.problem-item { padding: 40px 36px; border-right: 1px solid rgba(255,255,255,0.08); }
+.problem-item:last-child { border-right: none; }
+.problem-emoji { font-size: 32px; margin-bottom: 16px; }
+.problem-q { font-family: 'DM Serif Display', serif; font-size: 22px; color: white; margin-bottom: 12px; line-height: 1.2; font-style: italic; }
+.problem-a { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.65; }
+
+/* HOW IT WORKS */
+.how-section { background: white; }
+.steps-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 32px; margin-top: 64px; }
+.step-card { position: relative; padding: 36px 32px; border-radius: 20px; border: 1px solid var(--teal-100); background: var(--surface); transition: transform 0.2s, box-shadow 0.2s; overflow: hidden; }
+.step-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--teal-50) 0%, transparent 60%); opacity: 0; transition: opacity 0.3s; }
+.step-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(13,148,136,0.1); }
+.step-card:hover::before { opacity: 1; }
+.step-num { font-family: 'DM Serif Display', serif; font-size: 72px; font-weight: 400; color: var(--teal-100); line-height: 1; position: absolute; top: 16px; right: 24px; pointer-events: none; }
+.step-icon { width: 52px; height: 52px; border-radius: 14px; background: var(--teal-100); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; position: relative; z-index: 1; }
+.step-title { font-size: 18px; font-weight: 700; color: var(--teal-900); margin-bottom: 10px; position: relative; z-index: 1; }
+.step-desc { font-size: 14px; color: var(--ink-60); line-height: 1.65; position: relative; z-index: 1; }
+
+/* FEATURES */
+.features-section { background: var(--surface); }
+.features-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 24px; margin-top: 64px; }
+.feat-card { padding: 32px; border-radius: 20px; background: white; border: 1px solid var(--teal-100); display: flex; gap: 20px; transition: transform 0.2s, box-shadow 0.2s; }
+.feat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(13,148,136,0.08); }
+.feat-card.featured { grid-column: span 2; background: linear-gradient(135deg, var(--teal-900) 0%, var(--teal-800) 100%); border-color: transparent; }
+.feat-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--teal-50); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.feat-card.featured .feat-icon { background: rgba(255,255,255,0.12); }
+.feat-title { font-size: 16px; font-weight: 700; color: var(--teal-900); margin-bottom: 6px; }
+.feat-card.featured .feat-title { color: white; }
+.feat-desc { font-size: 14px; color: var(--ink-60); line-height: 1.6; }
+.feat-card.featured .feat-desc { color: rgba(255,255,255,0.65); }
+
+/* TICKER */
+.types-section { background: white; padding: 80px 0; overflow: hidden; }
+.types-track { display: flex; gap: 12px; width: max-content; animation: scrollTrack 30s linear infinite; }
+.types-track:hover { animation-play-state: paused; }
+@keyframes scrollTrack { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.type-pill { display: inline-flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--teal-100); padding: 10px 18px; border-radius: 100px; white-space: nowrap; font-size: 13px; font-weight: 500; color: var(--teal-800); flex-shrink: 0; }
+.type-pill .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.types-fade-left { position: absolute; left: 0; top: 0; bottom: 0; width: 120px; background: linear-gradient(to right, white, transparent); pointer-events: none; z-index: 2; }
+.types-fade-right { position: absolute; right: 0; top: 0; bottom: 0; width: 120px; background: linear-gradient(to left, white, transparent); pointer-events: none; z-index: 2; }
+.types-wrap { position: relative; }
+
+/* PRIVACY */
+.privacy-section { background: var(--surface); position: relative; overflow: hidden; }
+.privacy-section::before { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(20,184,166,0.06) 0%, transparent 70%); }
+.privacy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.privacy-card { background: white; border-radius: 20px; border: 1px solid var(--teal-100); padding: 32px; box-shadow: 0 16px 48px rgba(13,148,136,0.08); }
+.privacy-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--teal-50); }
+.privacy-row:last-child { border-bottom: none; }
+.privacy-row-label { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-60); }
+.privacy-row-val { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 100px; }
+.val-yes { background: #f0fdf4; color: #15803d; }
+.val-no  { background: #fef2f2; color: #b91c1c; }
+.privacy-badge-big { display: flex; align-items: center; gap: 12px; background: var(--teal-900); color: white; border-radius: 14px; padding: 18px 24px; margin-top: 16px; }
+.privacy-badge-big .icon { font-size: 28px; }
+.privacy-badge-title { font-size: 15px; font-weight: 700; }
+.privacy-badge-sub { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+
+/* LANGUAGES */
+.lang-pills { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
+.lang-pill { display: flex; align-items: center; gap: 10px; background: white; border: 1px solid var(--teal-100); padding: 12px 20px; border-radius: 12px; font-size: 14px; font-weight: 600; color: var(--teal-900); }
+.lang-flag { font-size: 22px; }
+
+/* CTA */
+.cta-section { background: var(--teal-900); position: relative; overflow: hidden; text-align: center; }
+.cta-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 30% 50%, rgba(20,184,166,0.2) 0%, transparent 70%), radial-gradient(ellipse 50% 50% at 75% 50%, rgba(15,118,110,0.15) 0%, transparent 70%); }
+.cta-section::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 24px 24px; }
+.cta-inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+.cta-h2 { font-family: 'DM Serif Display', serif; font-size: clamp(36px, 5vw, 58px); line-height: 1.1; color: white; margin-bottom: 20px; }
+.cta-h2 em { font-style: italic; color: var(--teal-300); }
+.cta-sub { font-size: 17px; color: rgba(255,255,255,0.6); margin-bottom: 40px; line-height: 1.6; }
+.btn-cta-white { display: inline-flex; align-items: center; gap: 10px; background: white; color: var(--teal-800); font-size: 16px; font-weight: 700; padding: 16px 36px; border-radius: 14px; border: none; cursor: pointer; text-decoration: none; box-shadow: 0 8px 32px rgba(0,0,0,0.2); transition: transform 0.15s, box-shadow 0.15s; }
+.btn-cta-white:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+.cta-small { font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 20px; }
+
+/* FOOTER */
+footer { background: #0a1a19; padding: 48px 0; }
+.footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+.footer-copy { font-size: 13px; color: rgba(255,255,255,0.3); }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 13px; color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--teal-400); }
+.footer-logo { display: flex; align-items: center; gap: 8px; }
+.footer-logo-text { font-weight: 800; color: var(--teal-500); font-size: 16px; }
+
+/* STATS */
+.stats-row { display: flex; gap: 48px; margin-top: 56px; padding-top: 56px; border-top: 1px solid var(--teal-100); flex-wrap: wrap; }
+.stat-num { font-family: 'DM Serif Display', serif; font-size: 42px; color: var(--teal-700); line-height: 1; }
+.stat-label { font-size: 13px; color: var(--ink-60); margin-top: 4px; font-weight: 500; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+  .hero-visual { display: none; }
+  .problem-grid { grid-template-columns: 1fr; }
+  .problem-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .steps-grid { grid-template-columns: 1fr; }
+  .features-grid { grid-template-columns: 1fr; }
+  .feat-card.featured { grid-column: span 1; }
+  .privacy-grid { grid-template-columns: 1fr; }
+  nav .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
+        <rect x="5" y="4" width="22" height="28" rx="3" fill="#14b8a6" opacity="0.12"/>
+        <rect x="5" y="4" width="22" height="28" rx="3" stroke="#0d9488" stroke-width="2"/>
+        <path d="M21 4 L27 10 H21 V4Z" fill="#14b8a6" opacity="0.25" stroke="#0d9488" stroke-width="1.5" stroke-linejoin="round"/>
+        <line x1="10" y1="16" x2="22" y2="16" stroke="#0d9488" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="10" y1="20" x2="22" y2="20" stroke="#0d9488" stroke-width="1.8" stroke-linecap="round" opacity="0.55"/>
+        <line x1="10" y1="24" x2="17" y2="24" stroke="#0d9488" stroke-width="1.8" stroke-linecap="round" opacity="0.35"/>
+        <circle cx="28" cy="29" r="7" fill="white"/>
+        <circle cx="28" cy="29" r="5.5" stroke="#0d9488" stroke-width="2" fill="#ccfbf1"/>
+        <line x1="32" y1="33" x2="36" y2="37" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M25.5 29 L27.5 31 L31 27" stroke="#0f766e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <div class="nav-logo-text">BriefKlar</div>
+        <div class="nav-logo-sub">German letters, made clear</div>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#download" class="btn-nav">Download Free →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow">
+        <span class="tag">🇩🇪 Free Windows App</span>
+      </div>
+      <h1 class="hero-h1">
+        German official<br>letters —<br><em>finally clear.</em>
+      </h1>
+      <p class="hero-sub">
+        Scan any German letter with your phone. BriefKlar reads it, explains what it means, what you must do, and when — in your language.
+      </p>
+      <div class="hero-actions">
+        <a href="https://github.com/MfFischer/briefklar/releases/latest/download/BriefKlar.Setup.0.2.0.exe" class="btn-primary" id="download-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download for Windows
+        </a>
+        <a href="#how" class="btn-ghost">
+          See how it works
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="hero-badges">
+        <div class="hero-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          100% local · no cloud
+        </div>
+        <div class="hero-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          No account required
+        </div>
+        <div class="hero-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          26 letter types · 5 languages
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-item"><div class="stat-num">26</div><div class="stat-label">Letter types recognised</div></div>
+        <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">UI languages</div></div>
+        <div class="stat-item"><div class="stat-num">0</div><div class="stat-label">Data sent to cloud</div></div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="float-chip chip-1">
+        <div class="pulse-dot"></div>
+        <span style="color:#15803d;font-weight:700;">OCR complete</span>
+      </div>
+      <div class="float-chip chip-2">
+        ⏰ <span style="color:#dc2626;font-weight:700;">Deadline: 7 days</span>
+      </div>
+      <div class="letter-card">
+        <div class="lc-top">
+          <div class="lc-badge">🚨 Critical</div>
+          <div class="lc-conf">✓ High confidence</div>
+        </div>
+        <div class="lc-title">Steuerbescheid · Income Tax Notice</div>
+        <div class="lc-sender">From: Finanzamt München · Scanned today</div>
+        <div class="lc-fields">
+          <div class="lc-field"><span class="lc-label">Amount</span><span class="lc-value amount">€ 1,240.00</span></div>
+          <div class="lc-field"><span class="lc-label">Deadline</span><span class="lc-value urgent">Oct 15 · 7 days left</span></div>
+          <div class="lc-field"><span class="lc-label">Status</span><span class="lc-value" style="color:#d97706;">⏳ Pending</span></div>
+        </div>
+        <div class="lc-divider"></div>
+        <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">What this is</div>
+        <div class="lc-what">Your annual income tax assessment from the tax office. It states the amount owed or to be refunded for the previous tax year.</div>
+        <div style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">What to do</div>
+        <div class="lc-steps">
+          <div class="lc-step"><div class="lc-step-num">1</div>Check the amount against your records.</div>
+          <div class="lc-step"><div class="lc-step-num">2</div>Pay by the deadline or file an Einspruch.</div>
+          <div class="lc-step"><div class="lc-step-num">3</div>Keep this letter for your records.</div>
+        </div>
+        <div class="lc-actions">
+          <button class="lca lca-primary">✓ Mark Handled</button>
+          <button class="lca lca-secondary">✉️ Generate Reply</button>
+        </div>
+      </div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-cam">📷</div>
+        <div class="phone-qr">
+          <div class="qr-cell qr-dark"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div>
+          <div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div>
+          <div class="qr-cell qr-dark"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div>
+          <div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div>
+          <div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div>
+          <div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-dark"></div>
+          <div class="qr-cell qr-dark"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div><div class="qr-cell qr-light"></div><div class="qr-cell qr-dark"></div>
+        </div>
+        <div class="phone-label">Scan QR with phone<br>to send photo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM STRIP -->
+<div class="problem-strip" id="why">
+  <div class="container">
+    <div class="problem-grid">
+      <div class="problem-item reveal">
+        <div class="problem-emoji">😰</div>
+        <div class="problem-q">"Is this urgent or can I ignore it?"</div>
+        <div class="problem-a">German bureaucratic letters rarely say clearly what they want from you or how serious missing the deadline is.</div>
+      </div>
+      <div class="problem-item reveal reveal-delay-1">
+        <div class="problem-emoji">⏰</div>
+        <div class="problem-q">"When exactly do I need to respond?"</div>
+        <div class="problem-a">Legal deadlines in Germany (§ 122 AO, 14-day Einspruch windows) are buried in small print and easy to miss.</div>
+      </div>
+      <div class="problem-item reveal reveal-delay-2">
+        <div class="problem-emoji">📄</div>
+        <div class="problem-q">"My German isn't good enough for this."</div>
+        <div class="problem-a">Official letters use dense legalese that's difficult even for native speakers. Expats and immigrants deserve clarity too.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="container">
+    <div class="section-tag reveal"><span class="tag">How it works</span></div>
+    <h2 class="section-h2 reveal reveal-delay-1">Three steps from<br><em>confusion to clarity</em></h2>
+    <p class="section-sub reveal reveal-delay-2">No uploads. No accounts. Everything happens on your computer in under 30 seconds.</p>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-num">01</div>
+        <div class="step-icon">📱</div>
+        <div class="step-title">Scan with your phone</div>
+        <div class="step-desc">Open BriefKlar on your PC. Click "Scan Letter" and scan the QR code with your phone. Photograph the letter — both sides if needed. Phone and PC just need to be on the same WiFi.</div>
+      </div>
+      <div class="step-card reveal reveal-delay-1">
+        <div class="step-num">02</div>
+        <div class="step-icon">🔍</div>
+        <div class="step-title">AI reads it instantly</div>
+        <div class="step-desc">BriefKlar runs local OCR on the image, identifies the letter type from 26 categories, extracts the sender, amount, and deadline — applying German legal deadline rules automatically.</div>
+      </div>
+      <div class="step-card reveal reveal-delay-2">
+        <div class="step-num">03</div>
+        <div class="step-icon">✅</div>
+        <div class="step-title">Know exactly what to do</div>
+        <div class="step-desc">Get a plain-language summary, step-by-step action list, and "what happens if you ignore this." Set a reminder, generate a reply letter, or export a PDF to share with your advisor.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LETTER TYPES TICKER -->
+<section class="types-section">
+  <div class="container" style="margin-bottom:32px;">
+    <p style="font-size:13px;font-weight:600;color:var(--ink-30);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Recognises 26 letter types including</p>
+  </div>
+  <div class="types-wrap">
+    <div class="types-fade-left"></div>
+    <div class="types-fade-right"></div>
+    <div style="overflow:hidden;">
+      <div class="types-track">
+        <div class="type-pill"><div class="dot" style="background:#ef4444"></div>Steuerbescheid</div>
+        <div class="type-pill"><div class="dot" style="background:#f97316"></div>Mahnbescheid</div>
+        <div class="type-pill"><div class="dot" style="background:#eab308"></div>GEZ Beitragsservice</div>
+        <div class="type-pill"><div class="dot" style="background:#ef4444"></div>Pfändungsbeschluss</div>
+        <div class="type-pill"><div class="dot" style="background:#22c55e"></div>Rentenversicherung</div>
+        <div class="type-pill"><div class="dot" style="background:#f97316"></div>Krankenkasse</div>
+        <div class="type-pill"><div class="dot" style="background:#eab308"></div>Nebenkostenabrechnung</div>
+        <div class="type-pill"><div class="dot" style="background:#ef4444"></div>Gerichtsbescheid</div>
+        <div class="type-pill"><div class="dot" style="background:#22c55e"></div>Kindergeld</div>
+        <div class="type-pill"><div class="dot" style="background:#f97316"></div>Jobcenter</div>
+        <div class="type-pill"><div class="dot" style="background:#eab308"></div>Mieterhöhung</div>
+        <div class="type-pill"><div class="dot" style="background:#ef4444"></div>Vollstreckungsbescheid</div>
+        <div class="type-pill"><div class="dot" style="background:#22c55e"></div>Ausländerbehörde</div>
+        <div class="type-pill"><div class="dot" style="background:#14b8a6"></div>USt-IdNr Mitteilung</div>
+        <div class="type-pill"><div class="dot" style="background:#f97316"></div>Bußgeldbescheid</div>
+        <div class="type-pill"><div class="dot" style="background:#22c55e"></div>Elterngeld</div>
+        <!-- Duplicate for seamless loop -->
+        <div class="type-pill"><div class="dot" style="background:#ef4444"></div>Steuerbescheid</div>
+        <div class="type-pill"><div class="dot" style="background:#f97316"></div>Mahnbescheid</div>
+        <div class="type-pill"><div class="dot" style="background:#eab308"></div>GEZ Beitragsservice</div>
+        <div class="type-pill"><div class="dot" style="background:#ef4444"></div>Pfändungsbeschluss</div>
+        <div class="type-pill"><div class="dot" style="background:#22c55e"></div>Rentenversicherung</div>
+        <div class="type-pill"><div class="dot" style="background:#f97316"></div>Krankenkasse</div>
+        <div class="type-pill"><div class="dot" style="background:#eab308"></div>Nebenkostenabrechnung</div>
+        <div class="type-pill"><div class="dot" style="background:#ef4444"></div>Gerichtsbescheid</div>
+        <div class="type-pill"><div class="dot" style="background:#22c55e"></div>Kindergeld</div>
+        <div class="type-pill"><div class="dot" style="background:#f97316"></div>Jobcenter</div>
+        <div class="type-pill"><div class="dot" style="background:#eab308"></div>Mieterhöhung</div>
+        <div class="type-pill"><div class="dot" style="background:#ef4444"></div>Vollstreckungsbescheid</div>
+        <div class="type-pill"><div class="dot" style="background:#22c55e"></div>Ausländerbehörde</div>
+        <div class="type-pill"><div class="dot" style="background:#14b8a6"></div>USt-IdNr Mitteilung</div>
+        <div class="type-pill"><div class="dot" style="background:#f97316"></div>Bußgeldbescheid</div>
+        <div class="type-pill"><div class="dot" style="background:#22c55e"></div>Elterngeld</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="container">
+    <div class="section-tag reveal"><span class="tag">Features</span></div>
+    <h2 class="section-h2 reveal reveal-delay-1">Everything you need,<br><em>nothing you don't</em></h2>
+    <div class="features-grid">
+      <div class="feat-card featured reveal">
+        <div class="feat-icon">🔒</div>
+        <div>
+          <div class="feat-title">100% local. Zero cloud.</div>
+          <div class="feat-desc">Your letters never leave your computer. No server, no account, no subscription. The AI model runs entirely offline using local OCR. Your data is yours — always.</div>
+        </div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">⚖️</div>
+        <div>
+          <div class="feat-title">Legal deadline intelligence</div>
+          <div class="feat-desc">Automatically applies § 122 AO 3-day delivery presumption and calculates Einspruch windows, payment deadlines, and appeal cutoffs accurately.</div>
+        </div>
+      </div>
+      <div class="feat-card reveal reveal-delay-1">
+        <div class="feat-icon">✉️</div>
+        <div>
+          <div class="feat-title">Reply letter templates</div>
+          <div class="feat-desc">Generate formal German reply letters for Einspruch, Widerspruch, Kündigung and more. Add your own Gemini API key for fully AI-drafted replies.</div>
+        </div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🌍</div>
+        <div>
+          <div class="feat-title">5 interface languages</div>
+          <div class="feat-desc">Use BriefKlar in English, Deutsch, Türkçe, العربية, or Українська. Designed for expats, immigrants, and anyone navigating Germany from the outside.</div>
+        </div>
+      </div>
+      <div class="feat-card reveal reveal-delay-1">
+        <div class="feat-icon">📄</div>
+        <div>
+          <div class="feat-title">PDF export &amp; sharing</div>
+          <div class="feat-desc">Export the full letter analysis as a clean PDF — deadline highlighted, steps numbered — to share with a lawyer, advisor, or family member who can help.</div>
+        </div>
+      </div>
+      <div class="feat-card reveal">
+        <div class="feat-icon">🔔</div>
+        <div>
+          <div class="feat-title">Deadline reminders</div>
+          <div class="feat-desc">Set native Windows notifications for any deadline. Export to your calendar via .ics file so deadlines never sneak up on you again.</div>
+        </div>
+      </div>
+      <div class="feat-card reveal reveal-delay-1">
+        <div class="feat-icon">🤝</div>
+        <div>
+          <div class="feat-title">Free help resources</div>
+          <div class="feat-desc">For each letter type, BriefKlar suggests free help — Mieterverein for rent disputes, Caritas for social benefits, VdK for disability cases, and more.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section class="privacy-section" id="privacy">
+  <div class="container">
+    <div class="privacy-grid">
+      <div>
+        <div class="section-tag reveal"><span class="tag">Privacy first</span></div>
+        <h2 class="section-h2 reveal reveal-delay-1">Your letters are<br><em>nobody else's business</em></h2>
+        <p class="section-sub reveal reveal-delay-2">Official letters contain your tax ID, health data, salary, and legal status. BriefKlar was designed from day one so that data never moves.</p>
+        <div class="lang-pills reveal reveal-delay-3">
+          <div class="lang-pill"><span class="lang-flag">🇬🇧</span> English</div>
+          <div class="lang-pill"><span class="lang-flag">🇩🇪</span> Deutsch</div>
+          <div class="lang-pill"><span class="lang-flag">🇹🇷</span> Türkçe</div>
+          <div class="lang-pill"><span class="lang-flag">🇸🇦</span> العربية</div>
+          <div class="lang-pill"><span class="lang-flag">🇺🇦</span> Українська</div>
+        </div>
+      </div>
+      <div class="privacy-visual reveal reveal-delay-2">
+        <div class="privacy-card">
+          <div style="font-size:12px;font-weight:700;color:var(--ink-30);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:20px;">What BriefKlar does with your data</div>
+          <div class="privacy-row"><div class="privacy-row-label"><span>🖥️</span> Stored on your computer</div><div class="privacy-row-val val-yes">✓ Always</div></div>
+          <div class="privacy-row"><div class="privacy-row-label"><span>☁️</span> Uploaded to a server</div><div class="privacy-row-val val-no">✗ Never</div></div>
+          <div class="privacy-row"><div class="privacy-row-label"><span>👤</span> Account required</div><div class="privacy-row-val val-no">✗ Never</div></div>
+          <div class="privacy-row"><div class="privacy-row-label"><span>📊</span> Analytics or tracking</div><div class="privacy-row-val val-no">✗ Never</div></div>
+          <div class="privacy-row"><div class="privacy-row-label"><span>💰</span> Subscription fee</div><div class="privacy-row-val val-no">✗ Never</div></div>
+          <div class="privacy-row"><div class="privacy-row-label"><span>📡</span> AI works offline</div><div class="privacy-row-val val-yes">✓ Yes (OCR)</div></div>
+          <div class="privacy-badge-big">
+            <div class="icon">🔐</div>
+            <div>
+              <div class="privacy-badge-title">Local-first · Always</div>
+              <div class="privacy-badge-sub">Your letter data lives in SQLite on your own machine. No exceptions.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / DOWNLOAD -->
+<section class="cta-section" id="download">
+  <div class="container" style="padding: 100px 24px;">
+    <div class="cta-inner">
+      <h2 class="cta-h2 reveal">Stop dreading<br><em>the letterbox.</em></h2>
+      <p class="cta-sub reveal reveal-delay-1">BriefKlar is free, private, and takes 2 minutes to set up. Download for Windows now — no account, no email, no strings.</p>
+      <a href="https://github.com/MfFischer/briefklar/releases/latest/download/BriefKlar.Setup.0.2.0.exe" class="btn-cta-white reveal reveal-delay-2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download BriefKlar — Free
+      </a>
+      <p class="cta-small reveal reveal-delay-3">Windows 10 / 11 · ~85 MB · No installation wizard drama</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <svg width="22" height="22" viewBox="0 0 40 40" fill="none">
+          <rect x="5" y="4" width="22" height="28" rx="3" fill="#14b8a6" opacity="0.2"/>
+          <rect x="5" y="4" width="22" height="28" rx="3" stroke="#0d9488" stroke-width="2"/>
+          <circle cx="28" cy="29" r="5.5" stroke="#0d9488" stroke-width="2" fill="#134e4a"/>
+          <line x1="32" y1="33" x2="36" y2="37" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M25.5 29 L27.5 31 L31 27" stroke="#14b8a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="footer-logo-text">BriefKlar</span>
+      </div>
+      <div class="footer-copy">© 2026 BriefKlar · Not legal advice · Always verify deadlines independently</div>
+      <div class="footer-links">
+        <a href="./privacy.html">Privacy</a>
+        <a href="./imprint.html">Imprint</a>
+        <a href="https://github.com/MfFischer/briefklar" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target) } })
+}, { threshold: 0.12 })
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20)
+}, { passive: true })
+const steps = document.querySelectorAll('.lc-step')
+let stepIdx = 0
+function highlightStep() {
+  steps.forEach((s, i) => { s.style.opacity = i === stepIdx ? '1' : '0.4'; s.style.transform = i === stepIdx ? 'translateX(4px)' : 'translateX(0)'; s.style.transition = 'opacity 0.4s, transform 0.4s' })
+  stepIdx = (stepIdx + 1) % steps.length
+}
+if (steps.length) { highlightStep(); setInterval(highlightStep, 2000) }
+</script>
+</body>
+</html>

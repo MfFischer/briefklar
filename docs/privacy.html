@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — BriefKlar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --teal-600: #0d9488; --teal-700: #0f766e; --teal-900: #134e4a; --teal-100: #ccfbf1; --ink: #0d1f1e; --ink-60: rgba(13,31,30,0.6); --surface: #f8fffe; }
+body { font-family: 'Outfit', sans-serif; background: var(--surface); color: var(--ink); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+nav { background: rgba(248,255,254,0.95); backdrop-filter: blur(16px); border-bottom: 1px solid var(--teal-100); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; font-size: 18px; color: var(--teal-900); }
+.nav-back { font-size: 14px; color: var(--teal-600); text-decoration: none; font-weight: 500; }
+.nav-back:hover { text-decoration: underline; }
+.container { max-width: 760px; margin: 0 auto; padding: 64px 24px; }
+h1 { font-size: 36px; font-weight: 800; color: var(--teal-900); margin-bottom: 8px; }
+.meta { font-size: 14px; color: var(--ink-60); margin-bottom: 48px; }
+h2 { font-size: 20px; font-weight: 700; color: var(--teal-900); margin: 40px 0 12px; }
+p { font-size: 15px; color: var(--ink-60); margin-bottom: 16px; }
+ul { padding-left: 20px; margin-bottom: 16px; }
+li { font-size: 15px; color: var(--ink-60); margin-bottom: 8px; }
+.highlight { background: var(--teal-100); border-left: 4px solid var(--teal-600); padding: 16px 20px; border-radius: 0 10px 10px 0; margin: 24px 0; }
+.highlight p { color: var(--teal-900); font-weight: 600; margin: 0; }
+footer { background: #0a1a19; padding: 32px 24px; text-align: center; }
+footer a { color: #14b8a6; text-decoration: none; font-size: 13px; }
+footer p { font-size: 13px; color: rgba(255,255,255,0.3); margin-top: 8px; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="./index.html" class="nav-logo">BriefKlar</a>
+  <a href="./index.html" class="nav-back">← Back to home</a>
+</nav>
+
+<div class="container">
+  <h1>Privacy Policy</h1>
+  <p class="meta">Last updated: March 2026</p>
+
+  <div class="highlight">
+    <p>🔐 Short version: BriefKlar processes all data locally on your computer. Nothing is ever sent to a server, cloud service, or third party. Ever.</p>
+  </div>
+
+  <h2>1. Who we are</h2>
+  <p>BriefKlar is a free, open-source desktop application for Windows developed by Maria Fe Fischer. The app is available at <a href="https://github.com/MfFischer/briefklar" style="color:var(--teal-600)">github.com/MfFischer/briefklar</a>.</p>
+
+  <h2>2. What data BriefKlar processes</h2>
+  <p>When you scan a letter, BriefKlar processes the following data <strong>locally on your device only</strong>:</p>
+  <ul>
+    <li>The photo image taken with your phone</li>
+    <li>The OCR text extracted from the photo</li>
+    <li>Classification results (letter type, sender, deadline, amount)</li>
+    <li>Any corrections you make ("Was this wrong?" feedback)</li>
+    <li>Your language preference</li>
+  </ul>
+  <p>All of this data is stored in a SQLite database file on your computer at <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:13px;">%APPDATA%\BriefKlar\briefklar.db</code>. You can delete this file at any time to remove all data.</p>
+
+  <h2>3. What data BriefKlar does NOT collect</h2>
+  <ul>
+    <li>No data is uploaded to any server</li>
+    <li>No analytics, crash reports, or telemetry</li>
+    <li>No account registration or login</li>
+    <li>No cookies (this is a desktop app, not a website)</li>
+    <li>No advertising identifiers</li>
+  </ul>
+
+  <h2>4. Internet connections</h2>
+  <p>BriefKlar makes no outbound internet connections during normal operation. The only time an internet connection is used:</p>
+  <ul>
+    <li><strong>Optional AI replies:</strong> If you choose to use the AI reply feature with your own Gemini API key, your letter text is sent to Google's Gemini API. This is entirely optional and requires you to provide your own API key.</li>
+    <li><strong>Mobile scan:</strong> The local QR code handoff server operates on your local WiFi network only — no data leaves your network.</li>
+  </ul>
+
+  <h2>5. Third-party libraries</h2>
+  <p>BriefKlar uses the following open-source libraries, all of which operate locally:</p>
+  <ul>
+    <li><strong>Tesseract.js</strong> — OCR engine (runs locally, no data sent anywhere)</li>
+    <li><strong>better-sqlite3</strong> — local database storage</li>
+    <li><strong>Electron</strong> — desktop app framework</li>
+    <li><strong>Sharp</strong> — local image processing</li>
+  </ul>
+
+  <h2>6. Children's privacy</h2>
+  <p>BriefKlar does not knowingly collect any information from children under 13. As no data is collected at all, this is not applicable.</p>
+
+  <h2>7. Your rights</h2>
+  <p>Since all data is stored locally on your device, you have full control over it at all times. You can:</p>
+  <ul>
+    <li>View all data in the app's dashboard</li>
+    <li>Delete individual letters from the dashboard</li>
+    <li>Delete all data by removing <code style="background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:13px;">%APPDATA%\BriefKlar\</code></li>
+    <li>Uninstall the app completely using Windows Settings</li>
+  </ul>
+
+  <h2>8. Changes to this policy</h2>
+  <p>If this policy changes, the updated version will be posted at this URL. Significant changes will be noted in the app's changelog on GitHub.</p>
+
+  <h2>9. Contact</h2>
+  <p>Questions about privacy? Open an issue on <a href="https://github.com/MfFischer/briefklar/issues" style="color:var(--teal-600)">GitHub</a>.</p>
+</div>
+
+<footer>
+  <a href="./index.html">← Back to BriefKlar</a>
+  <p>© 2026 BriefKlar · Not legal advice</p>
+</footer>
+</body>
+</html>
