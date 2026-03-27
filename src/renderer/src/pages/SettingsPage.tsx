@@ -2,6 +2,235 @@ import { useState, useEffect } from 'react'
 import { LANGUAGES, setLanguage, getLanguage } from '../i18n'
 import type { LangCode } from '../i18n'
 
+// ── Types ─────────────────────────────────────────────────────────────────────
+interface FeedbackStats {
+  totalCorrections: number
+  topMisclassified: Array<{ original: string; corrected: string; count: number }>
+}
+
+interface FeatureVote {
+  id: string
+  label: string
+  description: string
+  votes: number
+  userVoted: boolean
+}
+
+const FEATURE_IDEAS: Omit<FeatureVote, 'votes' | 'userVoted'>[] = [
+  { id: 'reply_library',   label: 'Reply template library',      description: 'More Einspruch, Widerspruch & Kündigung templates' },
+  { id: 'calendar_win',   label: 'Windows Calendar integration',  description: 'Add deadlines directly to Windows Calendar app' },
+  { id: 'ocr_improve',    label: 'Better OCR accuracy',           description: 'Handles blurry / dark / skewed photos better' },
+  { id: 'more_types',     label: 'More letter types',             description: 'Expand from 26 → 40+ recognised German letter types' },
+  { id: 'mobile_app',     label: 'Companion phone app',           description: 'Scan from phone even when PC is offline' },
+  { id: 'auto_remind',    label: 'Smarter reminders',             description: 'Auto-suggest reminder based on deadline urgency' },
+]
+
+// ── Insights panel ────────────────────────────────────────────────────────────
+function InsightsPanel() {
+  const [stats, setStats] = useState<FeedbackStats | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [expanded, setExpanded] = useState(false)
+
+  useEffect(() => {
+    window.briefklar.getFeedbackStats()
+      .then(setStats)
+      .finally(() => setLoading(false))
+  }, [])
+
+  const handleExport = async () => {
+    const data = await window.briefklar.exportFeedback()
+    const json = JSON.stringify(data, null, 2)
+    const blob = new Blob([json], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `briefklar-feedback-${new Date().toISOString().split('T')[0]}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  if (loading) return (
+    <div className="text-xs text-slate-400 py-3 text-center">Loading insights…</div>
+  )
+
+  if (!stats) return null
+
+  const hasMisclassifications = stats.topMisclassified.length > 0
+
+  return (
+    <div>
+      {/* Summary row */}
+      <div className="flex items-center gap-4 mb-4">
+        <div className="flex-1 bg-slate-50 rounded-xl p-3 text-center border border-surface-border">
+          <div className="text-2xl font-bold text-teal-700">{stats.totalCorrections}</div>
+          <div className="text-xs text-slate-400 mt-0.5">corrections submitted</div>
+        </div>
+        <div className="flex-1 bg-slate-50 rounded-xl p-3 text-center border border-surface-border">
+          <div className="text-2xl font-bold text-teal-700">{stats.topMisclassified.length}</div>
+          <div className="text-xs text-slate-400 mt-0.5">unique confusion pairs</div>
+        </div>
+      </div>
+
+      {/* No data state */}
+      {!hasMisclassifications && (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-700">
+          <p className="font-semibold mb-1">🎉 No misclassifications yet</p>
+          <p className="text-xs text-green-600">When users correct a wrong letter type, the pattern appears here. Keep scanning!</p>
+        </div>
+      )}
+
+      {/* Misclassification table */}
+      {hasMisclassifications && (
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Most corrected</span>
+            <button
+              onClick={() => setExpanded(e => !e)}
+              className="text-xs text-teal-600 hover:text-teal-700"
+            >
+              {expanded ? 'Show less' : 'Show all'}
+            </button>
+          </div>
+          <div className="space-y-1.5">
+            {(expanded ? stats.topMisclassified : stats.topMisclassified.slice(0, 5)).map((row, i) => (
+              <div key={i} className="flex items-center gap-2 text-xs bg-slate-50 rounded-lg px-3 py-2 border border-surface-border">
+                <span className="font-mono text-red-500 shrink-0 w-5 text-center font-bold">{row.count}×</span>
+                <span className="text-slate-500 truncate flex-1" title={row.original}>{row.original}</span>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                <span className="text-teal-700 font-medium truncate flex-1" title={row.corrected}>{row.corrected}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Export button */}
+      {hasMisclassifications && (
+        <button
+          type="button"
+          onClick={handleExport}
+          className="mt-4 w-full border border-surface-border text-slate-500 hover:bg-slate-50 text-xs font-medium py-2 rounded-xl transition-colors"
+        >
+          ↓ Export feedback JSON (for pattern tuning)
+        </button>
+      )}
+
+      <p className="text-xs text-slate-400 mt-3 leading-relaxed">
+        Each correction is stored locally. Export to JSON to manually tune
+        the pattern-matcher weights in <code className="bg-slate-100 px-1 rounded">letters.json</code>.
+      </p>
+    </div>
+  )
+}
+
+// ── Feature voting panel ──────────────────────────────────────────────────────
+function FeatureVotePanel() {
+  const [features, setFeatures] = useState<FeatureVote[]>(() =>
+    FEATURE_IDEAS.map(f => ({ ...f, votes: 0, userVoted: false }))
+  )
+  const [loaded, setLoaded] = useState(false)
+  const [thankYou, setThankYou] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Load votes + user votes from settings
+    Promise.all(
+      FEATURE_IDEAS.map(async (f) => {
+        const votes = await window.briefklar.getSetting(`vote_count_${f.id}`)
+        const voted = await window.briefklar.getSetting(`vote_cast_${f.id}`)
+        return {
+          ...f,
+          votes: votes ? parseInt(votes, 10) : 0,
+          userVoted: voted === '1',
+        }
+      })
+    ).then(updated => {
+      setFeatures(updated)
+      setLoaded(true)
+    })
+  }, [])
+
+  const handleVote = async (id: string) => {
+    const feat = features.find(f => f.id === id)
+    if (!feat || feat.userVoted) return
+
+    const newVotes = feat.votes + 1
+    await window.briefklar.setSetting(`vote_count_${id}`, String(newVotes))
+    await window.briefklar.setSetting(`vote_cast_${id}`, '1')
+
+    setFeatures(prev => prev.map(f =>
+      f.id === id ? { ...f, votes: newVotes, userVoted: true } : f
+    ))
+    setThankYou(id)
+    setTimeout(() => setThankYou(null), 3000)
+  }
+
+  const sorted = [...features].sort((a, b) => b.votes - a.votes)
+  const maxVotes = Math.max(1, ...sorted.map(f => f.votes))
+
+  if (!loaded) return <div className="text-xs text-slate-400 py-3 text-center">Loading…</div>
+
+  return (
+    <div className="space-y-2">
+      {thankYou && (
+        <div className="bg-teal-50 border border-teal-200 rounded-xl p-3 text-sm text-teal-700 mb-3">
+          ✓ Vote recorded! This helps prioritise what gets built next.
+        </div>
+      )}
+      {sorted.map((feat) => {
+        const barWidth = feat.votes > 0 ? Math.round((feat.votes / maxVotes) * 100) : 0
+        return (
+          <div
+            key={feat.id}
+            className={`relative bg-white border rounded-xl p-3 overflow-hidden transition-all ${
+              feat.userVoted
+                ? 'border-teal-300 bg-teal-50/30'
+                : 'border-surface-border hover:border-teal-200 cursor-pointer'
+            }`}
+            onClick={() => !feat.userVoted && handleVote(feat.id)}
+          >
+            {/* Vote bar background */}
+            {feat.votes > 0 && (
+              <div
+                className="absolute inset-y-0 left-0 bg-teal-50 transition-all duration-500"
+                style={{ width: `${barWidth}%` }}
+              />
+            )}
+            <div className="relative flex items-center gap-3">
+              {/* Vote button */}
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); handleVote(feat.id) }}
+                disabled={feat.userVoted}
+                className={`flex flex-col items-center w-10 shrink-0 rounded-lg py-1 transition-colors ${
+                  feat.userVoted
+                    ? 'text-teal-600 bg-teal-100'
+                    : 'text-slate-400 hover:text-teal-600 hover:bg-teal-50'
+                }`}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill={feat.userVoted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 19V5M5 12l7-7 7 7"/>
+                </svg>
+                <span className="text-xs font-bold leading-none mt-0.5">{feat.votes}</span>
+              </button>
+              {/* Feature info */}
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-semibold text-slate-800">{feat.label}</div>
+                <div className="text-xs text-slate-400 mt-0.5">{feat.description}</div>
+              </div>
+              {feat.userVoted && (
+                <span className="text-xs text-teal-600 font-semibold shrink-0">✓ Voted</span>
+              )}
+            </div>
+          </div>
+        )
+      })}
+      <p className="text-xs text-slate-400 pt-2 leading-relaxed">
+        Votes are stored locally. They help you understand what your users want most when planning v2 features.
+      </p>
+    </div>
+  )
+}
+
 export default function SettingsPage({ onShowWelcome }: { onShowWelcome?: () => void }) {
   const [apiKey, setApiKey] = useState('')
   const [savedKey, setSavedKey] = useState('')
@@ -270,6 +499,26 @@ export default function SettingsPage({ onShowWelcome }: { onShowWelcome?: () => 
             ↑ Restore Backup
           </button>
         </div>
+      </section>
+
+      {/* ── Classification Insights ── */}
+      <section className="bg-white border border-surface-border rounded-2xl p-5 mb-5">
+        <h2 className="font-semibold text-slate-800 mb-1">📊 Classification Insights</h2>
+        <p className="text-sm text-slate-500 mb-4">
+          See where the letter classifier gets it wrong. Every correction you submit via “Was this wrong?” appears here.
+          Export the data to improve the pattern-matcher for future versions.
+        </p>
+        <InsightsPanel />
+      </section>
+
+      {/* ── What should we build next? ── */}
+      <section className="bg-white border border-surface-border rounded-2xl p-5 mb-5">
+        <h2 className="font-semibold text-slate-800 mb-1">💡 What should we build next?</h2>
+        <p className="text-sm text-slate-500 mb-4">
+          Vote for the features you want most in the next version of BriefKlar.
+          One vote per feature — votes are saved on your device.
+        </p>
+        <FeatureVotePanel />
       </section>
 
       {/* ── About ── */}
