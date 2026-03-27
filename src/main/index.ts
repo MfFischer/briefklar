@@ -1,9 +1,11 @@
 import { app, BrowserWindow, shell, ipcMain, globalShortcut } from 'electron'
 import { join } from 'path'
 import { existsSync, mkdirSync, copyFileSync } from 'fs'
-import { initDb } from './db'
+import { initDb, closeDb } from './db'
 import { registerIpcHandlers } from './ipc-handlers'
 import { initScheduler } from './scheduler'
+import { terminateOcrWorker } from './ocr'
+import { stopHandoffServer, stopCalendarServer } from './handoff-server'
 
 function ensureTessdata(): void {
   const destDir  = join(app.getPath('userData'), 'tessdata')
@@ -90,4 +92,18 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
+})
+
+// Graceful shutdown: clean up workers and servers before exit
+app.on('before-quit', async () => {
+  try {
+    await Promise.allSettled([
+      terminateOcrWorker(),
+      stopHandoffServer(),
+      stopCalendarServer(),
+    ])
+    closeDb()
+  } catch (e) {
+    console.error('[BriefKlar] Error during shutdown:', e)
+  }
 })

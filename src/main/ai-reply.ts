@@ -3,7 +3,7 @@ import type { Letter } from '../shared/types'
 
 export async function generateAiReply(apiKey: string, letter: Letter): Promise<string> {
   const genAI = new GoogleGenerativeAI(apiKey)
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
 
   const deadline = letter.deadline
     ? new Date(letter.deadline).toLocaleDateString('de-DE')
@@ -50,7 +50,7 @@ Antwortschreiben:`
 export async function testApiKey(apiKey: string): Promise<boolean> {
   try {
     const genAI = new GoogleGenerativeAI(apiKey)
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
     await model.generateContent('Antworte mit: OK')
     return true
   } catch {

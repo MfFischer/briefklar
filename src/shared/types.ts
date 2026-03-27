@@ -18,6 +18,7 @@ export interface Letter {
   reminder_at: number | null
   notes: string | null
   reply_template_id: string | null
+  free_help: string[] | null
 }
 
 export interface LetterTypeSummary {
@@ -26,7 +27,7 @@ export interface LetterTypeSummary {
   labelDe: string
 }
 
-export type NewLetter = Omit<Letter, 'status' | 'reminder_at' | 'notes'>
+export type NewLetter = Omit<Letter, 'status' | 'reminder_at' | 'notes'> & { free_help?: string[] | null }
 
 export interface Reply {
   id: string
@@ -38,6 +39,15 @@ export interface Reply {
 
 export type NewReply = Reply
 
+export interface Feedback {
+  id: string
+  letter_id: string
+  original_type: string
+  corrected_type: string
+  raw_text_snippet: string
+  created_at: number
+}
+
 export interface LetterAnalysis {
   letterType: string
   typeLabel: string
@@ -47,15 +57,15 @@ export interface LetterAnalysis {
   amount: number | null
   currency: string
   deadline: string | null
-  letterDate: string | null       // date printed on the letter (Datum)
-  betreff: string | null          // extracted subject line from letter
-  referenceNumbers: string[]      // USt-IdNr, Steuernummer, Aktenzeichen etc.
+  letterDate: string | null
+  betreff: string | null
+  referenceNumbers: string[]
   whatItIs: string
   whatToDo: string[]
   consequence: string
   urgency: 'low' | 'medium' | 'high' | 'critical'
   replyTemplateId: string | null
-  freeHelp: string[]              // free help resources per letter type
+  freeHelp: string[]
 }
 
 export interface ProcessedImage {

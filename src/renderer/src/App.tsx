@@ -4,6 +4,8 @@ import Dashboard from './pages/Dashboard'
 import LetterView from './pages/LetterView'
 import SettingsPage from './pages/SettingsPage'
 import OnboardingScreen from './components/OnboardingScreen'
+import { setLanguage } from './i18n'
+import type { LangCode } from './i18n'
 import type { Letter } from '../../shared/types'
 
 export type Page =
@@ -26,6 +28,10 @@ export default function App() {
     // Show onboarding on first launch
     window.briefklar.getSetting('onboarding_done').then((val) => {
       if (!val) setShowOnboarding(true)
+    })
+    // Load saved language preference
+    window.briefklar.getSetting('ui_language').then((lang) => {
+      if (lang) setLanguage(lang as LangCode)
     })
     // Handle notification click → open specific letter
     const cleanup = window.briefklar.onOpenLetter((id) => {

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import type { Letter, Reply, LetterTypeSummary } from '../../../shared/types'
 import ReplyEditor from '../components/ReplyEditor'
 import ReminderPicker from '../components/ReminderPicker'
+import FeedbackButton from '../components/FeedbackButton'
+import ShareSummary from '../components/ShareSummary'
 
 interface Props {
   letterId: string
@@ -43,6 +45,16 @@ export default function LetterView({ letterId, onBack, onLettersChanged }: Props
   // Calendar
   const [calendarQr, setCalendarQr] = useState<string | null>(null)
   const [calendarExporting, setCalendarExporting] = useState(false)
+  const [exportingAnalysisPdf, setExportingAnalysisPdf] = useState(false)
+  const [analysisPdfSaved, setAnalysisPdfSaved] = useState<string | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (calendarQr) {
+        window.briefklar.stopCalendarServer().catch(() => {})
+      }
+    }
+  }, [calendarQr])
 
   const load = async () => {
     const [l, r] = await Promise.all([
@@ -66,7 +78,11 @@ export default function LetterView({ letterId, onBack, onLettersChanged }: Props
   }
 
   const handleDelete = async () => {
-    if (!confirm('Delete this letter permanently?')) return
+    const confirmed = await window.briefklar.showConfirmDialog(
+      'Delete this letter permanently?',
+      'This cannot be undone.'
+    )
+    if (!confirmed) return
     await window.briefklar.deleteLetter(letterId)
     onBack(); onLettersChanged()
   }
@@ -168,7 +184,7 @@ export default function LetterView({ letterId, onBack, onLettersChanged }: Props
         ← Back to all letters
       </button>
 
-      {/* Type badge + confidence */}
+      {/* Type badge + confidence + feedback button */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
         <div className={`inline-flex items-center gap-2 text-sm font-semibold px-3 py-1.5 rounded-full border ${urgencyColor[letter.urgency]}`}>
           {letter.urgency === 'critical' && '🚨'}
@@ -180,12 +196,7 @@ export default function LetterView({ letterId, onBack, onLettersChanged }: Props
         <span className={`text-xs px-2 py-1 rounded-full border font-medium ${conf.cls}`}>
           {conf.label}
         </span>
-        <button
-          onClick={startEditType}
-          className="text-xs text-slate-400 hover:text-brand-600 underline"
-        >
-          Wrong type?
-        </button>
+        <FeedbackButton letter={letter} onCorrected={() => { load(); onLettersChanged() }} />
       </div>
 
       {/* Type override dropdown */}
@@ -220,7 +231,7 @@ export default function LetterView({ letterId, onBack, onLettersChanged }: Props
       {(letter.confidence ?? 0) < 0.4 && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-4 text-sm text-yellow-800">
           <strong>Verify before acting.</strong> OCR confidence is low — the letter type and extracted fields may be incorrect.
-          Use "Wrong type?" to correct, or edit the raw text below to re-analyse.
+          Use the "Was this wrong?" button above to correct, or edit the raw text below to re-analyse.
         </div>
       )}
 
@@ -323,6 +334,24 @@ export default function LetterView({ letterId, onBack, onLettersChanged }: Props
         </section>
       )}
 
+      {/* Free Help */}
+      {letter.free_help && letter.free_help.length > 0 && (
+        <section className="bg-blue-50 border border-blue-200 rounded-2xl p-5 mb-4">
+          <h3 className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-3">Free Help Available</h3>
+          <ul className="space-y-1.5">
+            {letter.free_help.map((tip, i) => (
+              <li key={i} className="flex gap-2 text-sm text-blue-800">
+                <span className="text-blue-400 shrink-0">•</span>
+                <span>{tip}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Share with Advisor */}
+      <ShareSummary letter={letter} />
+
       {/* Actions */}
       <div className="flex flex-wrap gap-2 mb-4">
         {letter.status !== 'done' && (
@@ -362,6 +391,22 @@ export default function LetterView({ letterId, onBack, onLettersChanged }: Props
           📄 {showRawText ? 'Hide' : 'Show'} Raw Text
         </button>
         <button
+          onClick={async () => {
+            setExportingAnalysisPdf(true)
+            setAnalysisPdfSaved(null)
+            try {
+              const path = await window.briefklar.exportAnalysisPdf(letter.id)
+              if (path) setAnalysisPdfSaved(path)
+            } finally {
+              setExportingAnalysisPdf(false)
+            }
+          }}
+          disabled={exportingAnalysisPdf}
+          className="border border-surface-border text-slate-600 hover:bg-slate-50 text-sm font-medium px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
+        >
+          {exportingAnalysisPdf ? 'Exporting…' : '📄 Export PDF'}
+        </button>
+        <button
           onClick={handleDelete}
           className="text-red-500 hover:text-red-700 text-sm font-medium px-4 py-2 rounded-xl transition-colors"
         >
@@ -369,7 +414,15 @@ export default function LetterView({ letterId, onBack, onLettersChanged }: Props
         </button>
       </div>
 
-      {/* Calendar export — only if deadline exists */}
+      {/* Analysis PDF export confirmation */}
+      {analysisPdfSaved && (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4 text-sm text-green-700 flex items-center justify-between">
+          <span>✓ PDF saved: {analysisPdfSaved}</span>
+          <button onClick={() => setAnalysisPdfSaved(null)} className="text-green-500 hover:text-green-700 ml-3">✕</button>
+        </div>
+      )}
+
+      {/* Calendar export */}
       {letter.deadline && (
         <div className="bg-white border border-surface-border rounded-2xl p-4 mb-4">
           <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">

@@ -34,7 +34,8 @@ export function initDb(): void {
       status      TEXT DEFAULT 'pending',
       reminder_at INTEGER,
       notes       TEXT,
-      reply_template_id TEXT
+      reply_template_id TEXT,
+      free_help   TEXT
     );
 
     CREATE TABLE IF NOT EXISTS replies (
@@ -51,10 +52,23 @@ export function initDb(): void {
     );
   `)
 
-  // Migration: add confidence column to existing DBs that predate it
+  // Migrations: add columns to existing DBs that predate them
+  const migrations = [
+    'ALTER TABLE letters ADD COLUMN confidence REAL DEFAULT 0',
+    'ALTER TABLE letters ADD COLUMN free_help TEXT',
+  ]
+  for (const sql of migrations) {
+    try { db.exec(sql) } catch { /* column already exists — safe to ignore */ }
+  }
+
+  // Initialize feedback table (from feedback.ts)
+  // Imported lazily to avoid circular dependency issues during init
   try {
-    db.exec('ALTER TABLE letters ADD COLUMN confidence REAL DEFAULT 0')
-  } catch { /* column already exists — safe to ignore */ }
+    const { initFeedbackTable } = require('./feedback')
+    initFeedbackTable()
+  } catch (e) {
+    console.warn('[BriefKlar] Could not initialize feedback table:', e)
+  }
 }
 
 export function getDb(): Database.Database {
@@ -73,18 +87,19 @@ export function dbSaveLetter(letter: NewLetter): Letter {
       id, scanned_at, image_path, raw_text, letter_type, type_label,
       sender, amount, currency, deadline, urgency, confidence,
       what_it_is, what_to_do, consequence, status,
-      reminder_at, notes, reply_template_id
+      reminder_at, notes, reply_template_id, free_help
     ) VALUES (
       @id, @scanned_at, @image_path, @raw_text, @letter_type, @type_label,
       @sender, @amount, @currency, @deadline, @urgency, @confidence,
       @what_it_is, @what_to_do, @consequence, @status,
-      @reminder_at, @notes, @reply_template_id
+      @reminder_at, @notes, @reply_template_id, @free_help
     )
   `)
   stmt.run({
     ...letter,
     confidence: letter.confidence ?? 0,
     what_to_do: JSON.stringify(letter.what_to_do),
+    free_help: letter.free_help ? JSON.stringify(letter.free_help) : null,
     status: 'pending',
     reminder_at: null,
     notes: null
@@ -107,15 +122,17 @@ export function dbUpdateLetter(id: string, updates: Partial<Letter>): void {
     'status', 'reminder_at', 'notes', 'deadline',
     'raw_text', 'letter_type', 'type_label', 'urgency',
     'sender', 'amount', 'what_it_is', 'what_to_do', 'consequence',
-    'reply_template_id', 'confidence'
+    'reply_template_id', 'confidence', 'free_help'
   ]
   const fields = Object.keys(updates).filter((k) => allowed.includes(k))
   if (fields.length === 0) return
 
-  // Serialize what_to_do array if present
   const serialized: any = { ...updates, id }
   if (Array.isArray(serialized.what_to_do)) {
     serialized.what_to_do = JSON.stringify(serialized.what_to_do)
+  }
+  if (Array.isArray(serialized.free_help)) {
+    serialized.free_help = JSON.stringify(serialized.free_help)
   }
 
   const set = fields.map((f) => `${f} = @${f}`).join(', ')
@@ -157,6 +174,7 @@ function parseLetterRow(row: any): Letter {
   return {
     ...row,
     confidence: row.confidence ?? 0,
-    what_to_do: row.what_to_do ? JSON.parse(row.what_to_do) : []
+    what_to_do: row.what_to_do ? JSON.parse(row.what_to_do) : [],
+    free_help: row.free_help ? JSON.parse(row.free_help) : null,
   }
 }

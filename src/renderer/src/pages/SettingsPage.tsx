@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { LANGUAGES, setLanguage, getLanguage } from '../i18n'
+import type { LangCode } from '../i18n'
 
 export default function SettingsPage({ onShowWelcome }: { onShowWelcome?: () => void }) {
   const [apiKey, setApiKey] = useState('')
@@ -15,9 +17,15 @@ export default function SettingsPage({ onShowWelcome }: { onShowWelcome?: () => 
   const [userCity, setUserCity] = useState('')
   const [profileSaved, setProfileSaved] = useState(false)
 
+  // Language
+  const [lang, setLang] = useState<LangCode>(getLanguage())
+
   useEffect(() => {
     window.briefklar.getSetting('gemini_api_key').then((k) => {
       if (k) { setSavedKey(k); setApiKey(k) }
+    })
+    window.briefklar.getSetting('ui_language').then((l) => {
+      if (l) { setLang(l as LangCode); setLanguage(l as LangCode) }
     })
     Promise.all([
       window.briefklar.getSetting('user_name'),
@@ -31,6 +39,12 @@ export default function SettingsPage({ onShowWelcome }: { onShowWelcome?: () => 
       if (city) setUserCity(city)
     })
   }, [])
+
+  const handleLangChange = async (code: LangCode) => {
+    setLang(code)
+    setLanguage(code)
+    await window.briefklar.setSetting('ui_language', code)
+  }
 
   const handleSaveProfile = async () => {
     await Promise.all([
@@ -72,16 +86,43 @@ export default function SettingsPage({ onShowWelcome }: { onShowWelcome?: () => 
   }
 
   const handleImportBackup = async () => {
-    if (!confirm('Restoring a backup will replace all current data and restart the app. Continue?')) return
+    const confirmed = await window.briefklar.showConfirmDialog(
+      'Restore backup?',
+      'This will replace all current data and restart the app. This cannot be undone.'
+    )
+    if (!confirmed) return
     setBackupMsg(null)
     await window.briefklar.importBackup()
-    // App relaunches — this line won't run
   }
 
   return (
     <div className="max-w-xl mx-auto p-6">
       <h1 className="text-xl font-bold text-slate-800 mb-1">Settings</h1>
       <p className="text-sm text-slate-400 mb-8">All data is stored locally on your computer.</p>
+
+      {/* ── Language ── */}
+      <section className="bg-white border border-surface-border rounded-2xl p-5 mb-5">
+        <h2 className="font-semibold text-slate-800 mb-1">🌍 Language</h2>
+        <p className="text-sm text-slate-500 mb-4">
+          Choose your preferred language for the BriefKlar interface.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {LANGUAGES.map((l) => (
+            <button
+              key={l.code}
+              type="button"
+              onClick={() => handleLangChange(l.code)}
+              className={`px-4 py-2 rounded-xl text-sm font-medium border transition-colors ${
+                lang === l.code
+                  ? 'bg-brand-600 text-white border-brand-600'
+                  : 'bg-white text-slate-600 border-surface-border hover:bg-slate-50'
+              }`}
+            >
+              {l.native}
+            </button>
+          ))}
+        </div>
+      </section>
 
       {/* ── Your Profile ── */}
       <section className="bg-white border border-surface-border rounded-2xl p-5 mb-5">
@@ -142,7 +183,7 @@ export default function SettingsPage({ onShowWelcome }: { onShowWelcome?: () => 
         <h2 className="font-semibold text-slate-800 mb-1">✨ AI Reply Generation</h2>
         <p className="text-sm text-slate-500 mb-4">
           Optional. Add a free Gemini API key to unlock AI-generated German reply letters.
-          The app works fully without this.
+          The app works fully without this — built-in reply templates are always available.
         </p>
 
         {/* Guide */}
@@ -235,10 +276,10 @@ export default function SettingsPage({ onShowWelcome }: { onShowWelcome?: () => 
       <section className="bg-white border border-surface-border rounded-2xl p-5">
         <h2 className="font-semibold text-slate-800 mb-3">About BriefKlar</h2>
         <div className="space-y-1.5 text-sm text-slate-500 mb-4">
-          <p>Version 0.1.0</p>
+          <p>Version 0.2.0</p>
           <p>All data is stored locally · No cloud · No tracking</p>
           <p className="text-xs text-slate-400 pt-1">
-            BriefKlar uses OCR + pattern matching to analyse letters.
+            BriefKlar uses OCR + fuzzy pattern matching to analyse letters.
             It is not a legal service. Always verify important deadlines independently.
           </p>
         </div>

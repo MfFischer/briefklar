@@ -1,6 +1,6 @@
 {
   "name": "briefklar",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Scan any German letter. Know exactly what to do. Never miss a deadline.",
   "main": "out/main/index.js",
   "homepage": "./",

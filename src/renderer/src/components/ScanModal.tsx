@@ -72,6 +72,7 @@ export default function ScanModal({ onClose, onLetterSaved }: Props) {
         what_to_do: analysis.whatToDo,
         consequence: analysis.consequence,
         reply_template_id: analysis.replyTemplateId,
+        free_help: analysis.freeHelp?.length ? analysis.freeHelp : null,
       })
       onLetterSaved()
     } catch (e: any) {

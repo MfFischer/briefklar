@@ -1,5 +1,7 @@
 import { IpcMain, BrowserWindow, dialog, shell } from 'electron'
-import { writeFileSync } from 'fs'
+import { writeFileSync, copyFileSync, existsSync, mkdirSync } from 'fs'
+import { join, basename } from 'path'
+import { app } from 'electron'
 import { v4 as uuidv4 } from 'uuid'
 import { startHandoffServer, stopHandoffServer, startCalendarServer, stopCalendarServer, generateIcs } from './handoff-server'
 import { processImage } from './image-processor'
@@ -11,11 +13,12 @@ import {
   dbSaveReply, dbGetReplies,
   dbGetSetting, dbSetSetting
 } from './db'
+import { dbSaveFeedback, dbGetFeedbackStats, dbExportFeedback } from './feedback'
 import { scheduleReminder, cancelReminder } from './scheduler'
-import { exportReplyToPdf } from './pdf-generator'
+import { exportReplyToPdf, exportAnalysisToPdf } from './pdf-generator'
 import { exportBackup, importBackup } from './backup'
 import { generateAiReply, testApiKey } from './ai-reply'
-import type { NewLetter, NewReply } from '../shared/types'
+import type { NewLetter, NewReply, Feedback } from '../shared/types'
 
 export function registerIpcHandlers(
   ipcMain: IpcMain,
@@ -51,8 +54,24 @@ export function registerIpcHandlers(
 
   // Full pipeline: process + OCR + analyze in one call
   ipcMain.handle('process-letter', async (_event, imagePath: string) => {
-    const processed = await processImage(imagePath)
-    const rawText = await runOcr(processed.processedPath)
+    let processed
+    try {
+      processed = await processImage(imagePath)
+    } catch (e: any) {
+      throw new Error(`Image processing failed: ${e.message ?? e}`)
+    }
+
+    let rawText = ''
+    try {
+      rawText = await runOcr(processed.processedPath)
+    } catch (e: any) {
+      throw new Error(`OCR failed: ${e.message ?? e}`)
+    }
+
+    if (!rawText || rawText.trim().length < 20) {
+      throw new Error('OCR returned no readable text. Please try again with a clearer, well-lit photo.')
+    }
+
     const analysis = analyzeText(rawText)
     return { processed, rawText, analysis }
   })
@@ -70,7 +89,19 @@ export function registerIpcHandlers(
   // ── Database: Letters ───────────────────────────────────────────────────────
 
   ipcMain.handle('save-letter', async (_event, letter: NewLetter) => {
-    return dbSaveLetter({ ...letter, id: letter.id || uuidv4() })
+    let persistedImagePath = letter.image_path
+    try {
+      const imagesDir = join(app.getPath('userData'), 'images')
+      mkdirSync(imagesDir, { recursive: true })
+      const destPath = join(imagesDir, basename(letter.image_path))
+      if (!existsSync(destPath) && existsSync(letter.image_path)) {
+        copyFileSync(letter.image_path, destPath)
+      }
+      persistedImagePath = existsSync(destPath) ? destPath : letter.image_path
+    } catch (e) {
+      console.warn('[BriefKlar] Could not persist image:', e)
+    }
+    return dbSaveLetter({ ...letter, id: letter.id || uuidv4(), image_path: persistedImagePath })
   })
 
   ipcMain.handle('get-letters', async () => {
@@ -98,6 +129,20 @@ export function registerIpcHandlers(
 
   ipcMain.handle('get-replies', async (_event, letterId: string) => {
     return dbGetReplies(letterId)
+  })
+
+  // ── Feedback (misclassification reporting) ──────────────────────────────────
+
+  ipcMain.handle('save-feedback', async (_event, feedback: Feedback) => {
+    dbSaveFeedback(feedback)
+  })
+
+  ipcMain.handle('get-feedback-stats', async () => {
+    return dbGetFeedbackStats()
+  })
+
+  ipcMain.handle('export-feedback', async () => {
+    return dbExportFeedback()
   })
 
   // ── Reminders ───────────────────────────────────────────────────────────────
@@ -129,6 +174,12 @@ export function registerIpcHandlers(
     return exportReplyToPdf(content, letter)
   })
 
+  ipcMain.handle('export-analysis-pdf', async (_event, letterId: string) => {
+    const letter = dbGetLetter(letterId)
+    if (!letter) throw new Error('Letter not found')
+    return exportAnalysisToPdf(letter)
+  })
+
   // ── Backup / Restore ────────────────────────────────────────────────────────
 
   ipcMain.handle('export-backup', async () => {
@@ -153,9 +204,23 @@ export function registerIpcHandlers(
     return testApiKey(apiKey)
   })
 
+  // ── Dialogs ─────────────────────────────────────────────────────────────────
+
+  ipcMain.handle('show-confirm-dialog', async (_event, message: string, detail?: string) => {
+    const win = getWindow()
+    const result = await dialog.showMessageBox(win ?? new BrowserWindow({ show: false }), {
+      type: 'warning',
+      buttons: ['Cancel', 'Confirm'],
+      defaultId: 0,
+      cancelId: 0,
+      message,
+      detail: detail ?? '',
+    })
+    return result.response === 1
+  })
+
   // ── Calendar export ──────────────────────────────────────────────────────────
 
-  // "Add to Calendar" — save .ics and open with OS calendar app
   ipcMain.handle('export-calendar', async (_event, letterId: string) => {
     const letter = dbGetLetter(letterId)
     if (!letter || !letter.deadline) return null
@@ -171,7 +236,6 @@ export function registerIpcHandlers(
     return filePath
   })
 
-  // "Send to Phone" — spin up local server, return QR
   ipcMain.handle('get-calendar-qr', async (_event, letterId: string) => {
     const letter = dbGetLetter(letterId)
     if (!letter || !letter.deadline) return null
