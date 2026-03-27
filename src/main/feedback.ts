@@ -14,19 +14,8 @@ export interface Feedback {
   created_at: number
 }
 
-export function initFeedbackTable(): void {
-  const db = getDb()
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS feedback (
-      id              TEXT PRIMARY KEY,
-      letter_id       TEXT NOT NULL,
-      original_type   TEXT NOT NULL,
-      corrected_type  TEXT NOT NULL,
-      raw_text_snippet TEXT,
-      created_at      INTEGER NOT NULL
-    )
-  `)
-}
+// Table is created in db.ts initDb() — no-op kept for compatibility
+export function initFeedbackTable(): void {}
 
 export function dbSaveFeedback(feedback: Feedback): void {
   const db = getDb()

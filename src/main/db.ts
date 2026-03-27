@@ -50,6 +50,15 @@ export function initDb(): void {
       key   TEXT PRIMARY KEY,
       value TEXT
     );
+
+    CREATE TABLE IF NOT EXISTS feedback (
+      id               TEXT PRIMARY KEY,
+      letter_id        TEXT NOT NULL,
+      original_type    TEXT NOT NULL,
+      corrected_type   TEXT NOT NULL,
+      raw_text_snippet TEXT,
+      created_at       INTEGER NOT NULL
+    );
   `)
 
   // Migrations: add columns to existing DBs that predate them
@@ -59,15 +68,6 @@ export function initDb(): void {
   ]
   for (const sql of migrations) {
     try { db.exec(sql) } catch { /* column already exists — safe to ignore */ }
-  }
-
-  // Initialize feedback table (from feedback.ts)
-  // Imported lazily to avoid circular dependency issues during init
-  try {
-    const { initFeedbackTable } = require('./feedback')
-    initFeedbackTable()
-  } catch (e) {
-    console.warn('[BriefKlar] Could not initialize feedback table:', e)
   }
 }
 
